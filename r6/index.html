@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#100728">
+<title>GOONAGEDDON</title>
+<meta name="description" content="GOONAGEDDON, a neon sci-fi slot game.">
+<link rel="preload" as="image" href="assets/goon-v5/logo.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="game" aria-label="Goonageddon">
+  <div class="stars" aria-hidden="true"></div>
+  <header>
+    <div class="topline"><button id="settings" aria-label="Settings" class="small">☰</button></div>
+    <h1><img src="assets/goon-v5/logo.png" alt="Goonageddon"></h1>
+    <span class="demo-badge">DEMO · FICTIONAL COINS</span><div id="mode" class="modeplate" hidden></div>
+  </header>
+  <div class="stage">
+    <aside id="chaos" class="plate" hidden><h2>Chaos<br>progression</h2><div id="meter"></div><div id="points">0 / 120 Chaos Points</div><progress id="chaos-progress" max="120" value="0" aria-label="Chaos progression"></progress></aside>
+    <div id="pilot" aria-hidden="true"><img src="assets/goon-v5/commander.png" alt=""></div>
+    <section class="machine" aria-label="Reels">
+      <div class="machine-head"><span class="lamps">● ● ●</span><span id="ways" hidden></span><span class="lamps">● ● ●</span></div>
+      <div class="reels" id="reels"></div>
+      <div class="machine-foot"><i></i><i></i><i></i></div>
+      <img id="beam-ship" src="assets/bonus-3.jpg" alt=""><div id="effect" aria-hidden="true"></div>
+    </section>
+    <aside class="side" aria-label="Scatter and feature controls">
+      <div id="commander-reaction" hidden aria-hidden="true"><img src="assets/goon-v5/stage-1.png" alt=""><span></span></div><img id="ufo" src="assets/scatter-ufo.png" alt="">
+      <div id="feature" class="plate"><span id="feature-label">SCATTER BONUS</span><strong id="feature-number" hidden>8</strong><span id="feature-note">3 / 4 / 5+ UFOs</span><span id="feature-stage" hidden></span></div><button id="buy-open" class="buy-launch" aria-haspopup="dialog" aria-controls="panel">BONUSES</button><button id="ante-open" class="buy-launch" aria-haspopup="dialog" aria-controls="panel" aria-pressed="false">ANTE BET <b>OFF</b></button>
+    </aside>
+  </div>
+  <p id="status" aria-live="polite">Connecting to Engine</p>
+  <div id="round-actions" class="candidate-actions"><button id="retry" hidden>Reconnect</button><button id="replay-action" hidden>Play replay</button><span id="jurisdiction-readout"></span><button id="auto-stop" hidden>Stop Autoplay <span id="auto-left"></span></button></div>
+  <section class="console" aria-label="Game controls">
+    <div class="tools plate"><button id="info" aria-label="Game information" class="small">i</button><button id="mute" aria-label="Mute sound" aria-pressed="false" class="small">♪</button></div>
+    <div class="stake plate"><button id="minus" class="small" aria-label="Decrease amount">−</button><button id="amount-open" aria-label="Choose amount" aria-haspopup="dialog"><span id="bet-caption">PLAY AMOUNT</span><small id="base-stake" hidden></small><strong id="stake">—</strong></button><button id="plus" class="small" aria-label="Increase amount">+</button></div>
+    <button id="spin" aria-label="Spin" title="Spin (Space)"><img src="assets/approved-spin.png" alt=""></button>
+    <div class="tools play-tools plate"><button id="auto-open" class="small" aria-label="Autoplay" aria-haspopup="dialog">↻</button><button id="turbo" aria-label="Turbo" aria-pressed="false" class="small">ϟ</button></div>
+    <div class="readout plate"><span>WIN</span><strong id="win">—</strong></div>
+    <div id="balance-panel" class="readout plate"><span>BALANCE</span><strong id="balance">—</strong></div>
+  </section>
+</main>
+
+<dialog id="intro" aria-label="GOONAGEDDON welcome">
+  <div id="scene"></div><div class="goon-cockpit" aria-hidden="true"><img src="assets/goon-v5/commander.png" alt=""><i class="visor-glint"></i><i class="goon-heart"></i><i class="cockpit-dash"></i></div><div id="intro-fx" aria-hidden="true"><img class="intro-ship" src="assets/symbols-v2/scatter-ufo.png" alt=""><i class="lever"></i><i class="alarm"></i><i class="intro-beam"></i><img class="debris d1" src="assets/symbols-v2/asteroid.png" alt=""><img class="debris d2" src="assets/symbols-v2/asteroid.png" alt=""></div>
+  <div class="intro-content"><img src="assets/goon-v5/logo.png" alt="Goonageddon"><p id="scene-title">Deep Space</p><progress id="progress" value="0" max="100" aria-label="Intro progress"></progress><div id="intro-actions"><button id="enter">Play</button><button id="intro-skip" type="button">Skip intro</button><button id="intro-audio" class="small" aria-label="Intro sound" aria-pressed="false">♪</button></div></div>
+</dialog>
+
+<dialog id="bonus-cinema" aria-labelledby="cinema-title">
+  <div class="cinema-world" aria-hidden="true">
+    <div class="cinema-dust"></div>
+    <img class="cinema-ufo" src="assets/reel-art-v4/scatter-ufo.png" alt="">
+    <img class="cinema-cast" src="assets/goon-v5/commander.png" alt="">
+    <img class="face-detail face-visor" src="assets/goon-v5/motion-visor.png" alt="">
+    <img class="face-detail face-tongue" src="assets/goon-v5/motion-tongue.png" alt="">
+    <img class="cinema-co-pilot" src="assets/goon-v5/commander.png" alt="">
+    <div class="cinema-dash"><i></i><b></b><i></i></div>
+    <i class="cinema-drool"></i><i class="cinema-tongue"></i>
+    <i class="cinema-beam"></i><i class="cinema-impact"></i><div id="cinema-particles"></div>
+  </div>
+  <div class="cinema-copy"><div id="cinema-signal"></div><p id="cinema-kicker"></p><h2 id="cinema-title"></h2><strong id="cinema-award"></strong><p id="cinema-reaction"></p></div>
+  <span class="cinema-progress" aria-hidden="true"></span>
+  <button id="cinema-stop" type="button" hidden>Stop Autoplay</button><button id="cinema-skip" type="button" autofocus>Skip cinematic</button>
+</dialog>
+
+<dialog id="panel" aria-labelledby="panel-title"><header><h2 id="panel-title"></h2><button id="close" class="small" aria-label="Close">×</button></header><div id="panel-content"></div></dialog>
+<script type="module" src="app.mjs"></script>
+</body>
+</html>
