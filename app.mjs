@@ -3,6 +3,7 @@ import {config} from './math-v2.mjs';
 import {symbols, tiers, v1Config} from './math-v1.mjs';
 import {buyProfile,buyOptions,quoteBuy,resolvePurchase,replayPurchase,settlePurchase} from './bonus-buy.mjs';
 import {anteProfile,anteMultiplier,paidCost} from './ante.mjs';
+import {entryScenes, selectEnding, cinematicDuration} from './bonus-cinema.mjs';
 import {createAudio} from './audio.mjs';
 const gameTitle='GOONAGEDDON';
 const characterArt=Object.freeze({'alien-boss':'commander',cyclopz:'cyclopz','octo-lab':'octo','space-cow':'cow','wild-base':'commander'});
@@ -258,6 +259,62 @@ async function deliverWilds(event){
     cells[c][r].classList.add('hit-wild');
   }));
 }
+function runCinematic(scene,{tier=0,kind='entry',award='',title=scene.name,scatters=0}={}){
+  const dialog=$('bonus-cinema');
+  const duration=cinematicDuration(scene.duration,{reduced:prefersReduced,turbo:wallet.settings.turbo});
+  dialog.dataset.tier=String(tier+1);
+  dialog.dataset.kind=kind;
+  dialog.dataset.band=scene.band??'';
+  dialog.dataset.cast=scene.cast;
+  dialog.dataset.beat='approach';
+  dialog.style.setProperty('--cinema-time',duration+'ms');
+  dialog.querySelector('.cinema-cast').src=assetFile('assets/goon-v5/'+scene.cast+'.png');
+  $('cinema-kicker').textContent=kind==='entry'?scene.name:scene.band==='maximum'?'GOONAGEDDON · ROUND TOTAL':'GOONAGEDDON · BONUS COMPLETE';
+  $('cinema-title').textContent=title;
+  $('cinema-award').textContent=award;
+  $('cinema-reaction').textContent=scene.reaction;
+  $('cinema-signal').replaceChildren(...Array.from({length:scatters},()=>{
+    const icon=new Image();
+    icon.src=artFor('scatter-ufo');icon.alt='';return icon;
+  }));
+  const energy=kind==='entry'?tier+1:['low','moderate','high','exceptional','maximum'].indexOf(scene.band);
+  $('cinema-particles').replaceChildren(...Array.from({length:prefersReduced?0:8+energy*5},(_,i)=>{
+    const speck=document.createElement('i');
+    const a=i*2.399, distance=35+(i%7)*5;
+    speck.style.setProperty('--x',Math.cos(a)*distance+'vw');
+    speck.style.setProperty('--y',Math.sin(a)*distance*.8+'vh');
+    speck.style.setProperty('--lag',i%6*25+'ms');
+    return speck;
+  }));
+  return new Promise(resolve=>{
+    const timers=[];
+    function finish(){
+      timers.forEach(clearTimeout);
+      $('cinema-skip').removeEventListener('click',finish);
+      dialog.removeEventListener('cancel',cancel);
+      dialog.removeEventListener('close',finish);
+      if(dialog.open)dialog.close();
+      resolve();
+    }
+    function cancel(event){event.preventDefault();finish();}
+    function phase(fraction,beat,cue){
+      timers.push(setTimeout(()=>{
+        dialog.dataset.beat=beat;
+        if(kind==='entry')$('cinema-reaction').textContent=beat==='fire'?scene.charge:scene.reaction;
+        if(cue)audio.cue(cue,tier);
+      },duration*fraction));
+    }
+    $('cinema-skip').addEventListener('click',finish);
+    dialog.addEventListener('cancel',cancel);
+    dialog.addEventListener('close',finish);
+    dialog.showModal();
+    audio.cue(kind==='entry'?['regularAlarm','superAlarm','ultimateAlarm'][tier]:scene.band==='low'?'deflated':'endingLift',tier);
+    phase(.22,'cockpit',kind==='entry'?'alienGasp':undefined);
+    phase(.53,'fire',kind==='entry'?['purpleCharge','weaponSurge','planetBlast'][tier]:energy>1?'planetBlast':undefined);
+    phase(.68,'title',kind==='entry'?'entryFanfare':scene.band==='maximum'?'cap':undefined);
+    timers.push(setTimeout(finish,duration));
+  });
+}
 async function animateRound(round,stake,fast){
   shownPoints=0;shownStage=0;
   featurePanel(-1);
@@ -318,10 +375,12 @@ async function animateRound(round,stake,fast){
         }
         break;
       case 'bonus':
+        if(!fast)await runCinematic(entryScenes[e.tier],{
+          tier:e.tier,title:tiers[e.tier],award:e.remaining+' FREE SPINS',scatters:scatterCount||e.tier+3
+        });
         featurePanel(e.tier,e.remaining,scatterCount);
-        status(tiers[e.tier]+' activated · 8 free spins');
-        if(!fast)audio.cue('bonus',e.tier);
-        if(!round.purchaseId)await wait(1650+e.tier*300,fast);
+        status(tiers[e.tier]+' activated · '+e.remaining+' free spins');
+        await wait(420,fast);
         break;
       case 'points':
         shownPoints=e.points;
@@ -358,14 +417,14 @@ async function animateRound(round,stake,fast){
         break;
       case 'cap':
         status('Maximum win · 50,000×');
-        if(!fast)audio.cue('cap');
         document.querySelectorAll('.burst,.winning').forEach(cell=>cell.classList.remove('burst','winning'));
-        await wait(1800,fast);
+        if(!fast&&round.tier<0)await runCinematic(selectEnding(e.paid,true),{tier:2,kind:'ending',award:money(e.paid*stake)+' credits'});
         break;
       case 'summary':
         status(tiers[e.tier]+' complete · '+money(e.bonusWin*stake)+' credits');
-        if(!fast)audio.cue('large');
-        await wait(1900,fast);
+        if(!fast)await runCinematic(selectEnding(e.bonusWin,e.capped),{
+          tier:e.tier,kind:'ending',award:money((e.capped?e.total:e.bonusWin)*stake)+' credits'
+        });
         break;
       case 'end':
         if(round.tier<0)status(e.capped?'Maximum win · 50,000×':e.total?'Round complete · '+money(e.total*stake)+' credits':'Ready to spin');

@@ -65,6 +65,9 @@ export function createAudio(settings) {
     }catch{}
   }
   const cues={
+    regularAlarm:[65,69,65],superAlarm:[54,66,54,66],ultimateAlarm:[29,36,43],
+    alienGasp:[52,68,59],purpleCharge:[37,49,61,73],weaponSurge:[31,42,55,67],
+    planetBlast:[24,31,43],entryFanfare:[55,62,67,74,79],deflated:[65,61,55,48],endingLift:[55,59,67,71],
     scatterLaunch:[45,57],scatterLand:[52,64,76],
     ambience:[31,43,50],alarm:[63,75,63],spin:[36,42,48],stop:[48],scatter:[63,70,75],expand:[50,62,74],win:[64,68,71,76],burst:[54,36],
     tumble:[74,66,55],bonus:[48,55,60,67,72],milestone:[67,72,76,84],beam:[38,49,63],drop:[56,43,68],
@@ -87,6 +90,10 @@ export function createAudio(settings) {
       texture(.12,2700,510,.10,(variant-2)/3);
       tone(39+variant,now,.18,.094,effects,'sine',30);
     }
+    if(name==='purpleCharge')texture(.39,260,3100,.1);
+    if(name==='weaponSurge'){texture(.29,1900,350,.13);texture(.11,340,1950,.09,.5,.17);}
+    if(name==='planetBlast'){texture(.78,1160,90,.19);tone(28,now,.55,.15,effects,'sine',18);}
+    if(name==='ultimateAlarm')tone(24,now,.55,.11,effects,'triangle',31);
     if(name==='burst')texture(.26,1720,110,.15);
     if(name==='tumble')texture(.19,250,116,.075);
     if(name==='expand')texture(.41,540,3700,.073);

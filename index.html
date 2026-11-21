@@ -7,13 +7,13 @@
 <title>GOONAGEDDON</title>
 <meta name="description" content="GOONAGEDDON, a neon sci-fi arcade game with fictional credits.">
 <link rel="preload" as="image" href="assets/goon-v5/logo.png">
-<link rel="stylesheet" href="style.css?v=0c51bdc144ff">
+<link rel="stylesheet" href="style.css?v=084857510a46">
 </head>
 <body>
 <main id="game" aria-label="Goonageddon">
   <div class="stars" aria-hidden="true"></div>
   <header>
-    <div class="topline"><span class="mode"><i></i> FICTIONAL CREDITS · V5</span><button id="settings" aria-label="Settings" class="small">☰</button></div>
+    <div class="topline"><span class="mode"><i></i> FICTIONAL CREDITS · V6</span><button id="settings" aria-label="Settings" class="small">☰</button></div>
     <h1><img src="assets/goon-v5/logo.png" alt="Goonageddon"></h1>
     <div id="mode" class="modeplate">BASE GAME</div>
   </header>
@@ -45,6 +45,22 @@
   <div id="scene"></div><div class="goon-cockpit" aria-hidden="true"><img src="assets/goon-v5/commander.png" alt=""><i class="visor-glint"></i><i class="goon-heart"></i><i class="cockpit-dash"></i></div><div id="intro-fx" aria-hidden="true"><img class="intro-ship" src="assets/symbols-v2/scatter-ufo.png" alt=""><i class="lever"></i><i class="alarm"></i><i class="intro-beam"></i><img class="debris d1" src="assets/symbols-v2/asteroid.png" alt=""><img class="debris d2" src="assets/symbols-v2/asteroid.png" alt=""></div>
   <div class="intro-content"><img src="assets/goon-v5/logo.png" alt="Goonageddon"><p id="scene-title">Deep Space</p><progress id="progress" value="0" max="100" aria-label="Intro progress"></progress><div id="intro-actions"><button id="enter">Enter game</button><button id="intro-audio" class="small" aria-label="Enable intro sound">♪</button></div></div>
 </dialog>
+<dialog id="bonus-cinema" aria-labelledby="cinema-title">
+  <div class="cinema-world" aria-hidden="true">
+    <div class="cinema-dust"></div>
+    <img class="cinema-ufo" src="assets/reel-art-v4/scatter-ufo.png" alt="">
+    <img class="cinema-cast" src="assets/goon-v5/commander.png" alt="">
+    <img class="face-detail face-visor" src="assets/goon-v5/motion-visor.png" alt="">
+    <img class="face-detail face-tongue" src="assets/goon-v5/motion-tongue.png" alt="">
+    <img class="cinema-co-pilot" src="assets/goon-v5/commander.png" alt="">
+    <div class="cinema-dash"><i></i><b></b><i></i></div>
+    <i class="cinema-drool"></i><i class="cinema-tongue"></i>
+    <i class="cinema-beam"></i><i class="cinema-impact"></i><div id="cinema-particles"></div>
+  </div>
+  <div class="cinema-copy"><div id="cinema-signal"></div><p id="cinema-kicker"></p><h2 id="cinema-title"></h2><strong id="cinema-award"></strong><p id="cinema-reaction"></p></div>
+  <span class="cinema-progress" aria-hidden="true"></span>
+  <button id="cinema-skip" type="button" autofocus>Skip cinematic</button>
+</dialog>
 <dialog id="buy-dialog" aria-labelledby="buy-title">
   <header class="buy-header"><div><p>GOONAGEDDON · FICTIONAL CREDITS</p><h2 id="buy-title">BONUS BUY</h2></div><button id="buy-close" class="small" aria-label="Close Bonus Buy">×</button></header>
   <p id="buy-wallet"></p><div id="buy-cards"></div>
@@ -52,6 +68,6 @@
   <p id="buy-feedback" role="status"></p>
 </dialog>
 <dialog id="panel"><header><h2 id="panel-title"></h2><button id="close" class="small" aria-label="Close">×</button></header><div id="panel-content"></div></dialog>
-<script type="module" src="app.mjs?v=0c51bdc144ff"></script>
+<script type="module" src="app.mjs?v=084857510a46"></script>
 </body>
 </html>
