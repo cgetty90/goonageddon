@@ -32,17 +32,26 @@
     <div id="mode" class="modeplate" hidden></div>
   </header>
   <div class="stage">
-    <aside id="chaos" class="plate" hidden><h2>Chaos<br>progression</h2><div id="meter"></div><div id="points">0 / 120 Chaos Points</div><progress id="chaos-progress" max="120" value="0" aria-label="Chaos progression"></progress></aside>
-    
+    <aside id="chaos" class="plate" aria-labelledby="chaos-title" hidden>
+      <div class="chaos-heading">
+        <h2 id="chaos-title">Chaos Progression</h2>
+        <div id="points">0 / 120 Chaos Points</div>
+      </div>
+      <div id="feature">
+        <strong id="feature-number" hidden>8</strong>
+        <span id="feature-label">FREE SPINS</span>
+        <span id="feature-stage" hidden></span>
+      </div>
+      <progress id="chaos-progress" max="120" value="0" aria-labelledby="chaos-title"></progress>
+      <div id="meter"></div>
+      <div id="commander-reaction" hidden aria-hidden="true"><img src="assets/goon-v5/stage-1.png" alt=""><span></span></div>
+    </aside>
+
     <section class="machine" aria-label="Reels">
       <div class="dock-rim" aria-hidden="true"></div><div class="reels" id="reels"></div><div class="dock-glass" aria-hidden="true"></div>
       <div class="machine-foot"><i></i><i></i><i></i></div>
       <img id="beam-ship" src="assets/visual/environment/tug.webp" alt=""><div id="effect" aria-hidden="true"></div>
     </section>
-    <aside class="side" aria-label="Scatter and feature controls">
-      <div id="commander-reaction" hidden aria-hidden="true"><img src="assets/goon-v5/stage-1.png" alt=""><span></span></div><img id="ufo" src="assets/visual/symbols/scatter.webp" alt="">
-      <div id="feature" class="plate"><span id="feature-label">SCATTER BONUS</span><strong id="feature-number" hidden>8</strong><span id="feature-note">3 / 4 / 5+ UFOs</span><span id="feature-stage" hidden></span></div>
-    </aside>
   </div>
   <p id="status" aria-live="polite">Connecting to Engine</p>
   <div id="round-actions" class="candidate-actions"><button id="retry" hidden>Reconnect</button><button id="replay-action" hidden>Play replay</button><span id="jurisdiction-readout"></span><button id="auto-stop" hidden>Stop Autoplay <span id="auto-left"></span></button></div>

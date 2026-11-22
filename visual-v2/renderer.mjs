@@ -17,7 +17,7 @@ const wait=(ms,fast=false)=>new Promise(done=>setTimeout(done,fast?0:prefersRedu
 function imageInfo(id) {
   if(id<SCATTER) return [symbols[id][1],displaySymbol(symbols[id][1],symbols[id][0]),''];
   if(id===SCATTER) return ['scatter-ufo','Scatter','SCATTER'];
-  if(id===EXPAND) return ['expanding','Expanding wild','EXPAND WILD'];
+  if(id===EXPAND) return ['expanding','XWAYS expanding wild','XWAYS'];
   const mult=id-WILD;
   return [mult?'multiplier':'wild-base',mult?'Wild ×'+mult:'Wild',mult?'WILD ×'+mult:'WILD'];
 }
@@ -75,7 +75,7 @@ function winCounter(units,fast){
   }
   ticker=requestAnimationFrame(animate);
 }
-function featurePanel(tier,remaining=0,scatters=0,scoreTier=tier){
+function featurePanel(tier,remaining=0,scoreTier=tier){
   audio.setScore(scoreTier);
   feature=tier;
   const active=tier>=0;
@@ -88,8 +88,6 @@ function featurePanel(tier,remaining=0,scatters=0,scoreTier=tier){
   $('feature-label').textContent=active?'FREE SPINS':'SCATTER BONUS';
   $('feature-number').hidden=!active;
   $('feature-number').textContent=active?remaining:'';
-  if(active)$('feature-note').textContent=scatters?scatters+' scatters triggered':'Direct feature entry';
-  else $('feature-note').textContent='3 / 4 / 5+ UFOs';
   updateMeter();
 }
 const reactions=['Smooth, Commander','Tongue out','Drool alert','Heart eyes','Maximum swoon'];
@@ -150,7 +148,7 @@ function showConnections(groups) {
       line.className='connection';
       Object.assign(line.style,{left:(x-bounds.x)+'px',top:(y-bounds.y)+'px',width:Math.hypot(dx,dy)+'px',transform:'rotate('+Math.atan2(dy,dx)+'rad)'});
       $('effect').append(line);
-      setTimeout(()=>line.remove(),360);
+      setTimeout(()=>line.remove(),440);
     }
   }
 }
@@ -315,7 +313,7 @@ async function animateRound(round, amount, cursor, checkpoint){
   const value = multiplier => amount === null ? multiplier : unitsAt(amount, multiplier);
   shownPoints=0;shownStage=0;
   const resumedTier=round.events.find(event=>event.type==='bonus'&&event.index<=cursor)?.tier??-1;
-  featurePanel(-1,0,0,resumedTier);
+  featurePanel(-1,0,resumedTier);
   winCounter(0,true);
   let scatterCount=0;
   for(const e of round.events){
@@ -342,15 +340,20 @@ async function animateRound(round, amount, cursor, checkpoint){
         break;
       }
       case 'expand':
-        status('Expanding wild');
+        status('XWAYS · Expanding Wild');
         if(!fast){
           audio.cue('expand');
           animateCells(e.reels.flatMap(c=>cells[c]),'anticipation',310);
         }
         e.reels.forEach(c=>$('reels').children[c].classList.add('expanding'));
-        await wait(310,fast);
+        await wait(440,fast);
         render(e.board);
-        e.reels.forEach(c=>$('reels').children[c].classList.add('expanding','expanded-reel'));
+        e.reels.forEach(c=>{
+          $('reels').children[c].classList.add('expanding','expanded-reel');
+          cells[c][0].append(Object.assign(document.createElement('span'),{
+            className:'xways-reel-badge',textContent:'XWAYS'
+          }));
+        });
         if(!fast&&!wallet.settings.turbo)animateCells(e.reels.flatMap(c=>cells[c]),'bonus',440);
         await wait(440,fast);
         break;
@@ -362,7 +365,8 @@ async function animateRound(round, amount, cursor, checkpoint){
           e.positions.forEach(([c,r])=>cells[c][r].classList.add('winning'));
           if(!wallet.settings.turbo)animateCells(e.positions.map(([c,r])=>cells[c][r]),'win',530);
           showConnections(e.groups);
-          await wait(330);
+          if(prefersReduced)await new Promise(done=>setTimeout(done,280));
+          else await wait(440);
           audio.cue('burst');
           e.positions.forEach(([c,r])=>cells[c][r].classList.add('burst'));
           particles(e.positions);
@@ -380,7 +384,7 @@ async function animateRound(round, amount, cursor, checkpoint){
         if(!fast)await runCinematic(entryScenes[e.tier],{
           tier:e.tier,title:tiers[e.tier],award:e.remaining+' FREE SPINS',scatters:scatterCount||e.tier+3
         });
-        featurePanel(e.tier,e.remaining,scatterCount);
+        featurePanel(e.tier,e.remaining);
         status(tiers[e.tier]+' activated · '+e.remaining+' free spins');
         await wait(420,fast);
         break;
@@ -390,6 +394,12 @@ async function animateRound(round, amount, cursor, checkpoint){
         break;
       case 'milestone':
         shownStage=e.stage;
+        if(!fast&&!prefersReduced&&!wallet.settings.turbo){
+          $('chaos').animate([
+            {boxShadow:'inset 0 0 32px #ccff6688, 0 0 24px #beff66aa'},
+            {boxShadow:'inset 0 1px #ffffff28, 0 3px 12px #090410'}
+          ],{duration:650,easing:'ease-out'});
+        }
         showCommanderReaction(e.stage);
         $('feature-number').textContent=e.remaining;
         updateMeter();
