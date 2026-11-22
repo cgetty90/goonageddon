@@ -99,7 +99,7 @@
 
 
 /* Keep the primary action prominent without crowding the amount readout. */
-#game,#game[data-tier]{--spin-size:clamp(80px,8.5vw,104px);--spin-reserve:27px;--bonus-reserve:130px}
+#game,#game[data-tier]{--spin-size:clamp(80px,8.5vw,104px);--spin-reserve:27px;--bonus-reserve:146px}
 #game .reels{--aperture-height:calc(max(24px, var(--fixed-slot) - var(--spin-reserve) / 6) * 6 + 2px)}
 #game[data-tier] .reels{--aperture-height:calc(max(19px, var(--fixed-slot) - (var(--spin-reserve) + var(--bonus-reserve)) / 6) * 6 + 2px)}
 #game .console #spin,#game[data-tier] .console #spin{
@@ -123,7 +123,7 @@
  #game .console .play-tools svg{width:20px}
 }
 @media(max-width:760px) and (orientation:portrait){
- #game,#game[data-tier]{--spin-size:clamp(100px,28vw,112px);--spin-reserve:14px;--bonus-reserve:110px}
+ #game,#game[data-tier]{--spin-size:clamp(100px,28vw,112px);--spin-reserve:17px;--bonus-reserve:107px}
  #game .console,#game[data-tier] .console{
   grid-template-columns:minmax(0,1fr) repeat(2,calc(var(--spin-size) / 2 + 1px)) minmax(0,1fr)
  }
