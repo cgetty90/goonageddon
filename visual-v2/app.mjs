@@ -11,24 +11,7 @@ import {createAudio} from './audio.mjs';
 import {createRenderer} from './renderer.mjs';
 
 const $=id=>document.getElementById(id);
-const settingsKey='goonageddon-visual-v2-silent-audio';
-const audioDefaults={music:0,effects:0,mute:true};
-function readAudioPreferences(){
-  const values={...audioDefaults};
-  try{
-    const stored=JSON.parse(localStorage.getItem(settingsKey));
-  for(const name of ['music','effects']){
-      if(Number.isFinite(stored?.[name])&&stored[name]>=0&&stored[name]<=1)values[name]=stored[name];
-    }
-    if(typeof stored?.mute==='boolean')values.mute=stored.mute;
-  }catch{}
-  return values;
-}
-const wallet={settings:{...readAudioPreferences(),mute:true,turbo:false}};
-function saveAudioPreferences(){
-  const {music,effects,mute}=wallet.settings;
-  try{localStorage.setItem(settingsKey,JSON.stringify({music,effects,mute}));}catch{}
-}
+const wallet={settings:{music:0,effects:0,mute:true,turbo:false}};
 const audio=createAudio(()=>wallet.settings);
 const opened=Date.now();
 let options,client,exclusive,replay,amount=0,balance=0,currency='',levels=[],flags={},available=[],enhanced=false,net=0,unsettledBalance=null,state='loading';
@@ -77,21 +60,19 @@ function controls(){
   $('turbo').disabled=!ready||autoplay.active;
   $('auto-open').hidden=!autoplayAllowed();
   $('auto-open').disabled=!canPlay||!cost||!choices.includes(amount)||amount*cost>balance;
+  $('auto-open').setAttribute('aria-pressed',String(autoplay.active));
   $('auto-stop').hidden=$('cinema-stop').hidden=!autoplay.active;
   $('game').toggleAttribute('data-autoplay',autoplay.active);
   $('amount-open').disabled=!canPlay;
   $('amount-open').toggleAttribute('data-replay',!!options?.replay);
   $('mode').hidden=!options?.replay&&!$('game').hasAttribute('data-tier');
-  $('buy-open').hidden=!!flags.disabledBuyFeature||!available.some(mode=>mode.feature)||!!options?.replay;
-  $('ante-open').hidden=!!flags.disabledBuyFeature||!available.some(mode=>mode.name==='ANTE')||!!options?.replay;
+  $('buy-open').hidden=!!flags.disabledBuyFeature||!available.some(mode=>mode.feature||mode.name==='ANTE')||!!options?.replay;
   $('buy-open').disabled=!canPlay;
-  $('ante-open').disabled=!canPlay||(!enhanced&&!validAmount(available.find(mode=>mode.name==='ANTE')));
-  $('ante-open').firstChild.nodeValue=options?.social?'ANTE ':'ANTE BET ';
-  $('ante-open').setAttribute('aria-pressed',String(enhanced));
-  $('ante-open').querySelector('b').textContent=enhanced?'ON':'OFF';
+  $('buy-open').setAttribute('aria-label',enhanced?'Bonus Buy and Ante Bet · Ante on':'Bonus Buy and Ante Bet');
+  $('ante-indicator').hidden=!enhanced;
   $('retry').hidden=state!=='error'||!client;
   $('replay-action').hidden=!(options?.replay&&replay&&ready);
-  $('settings').disabled=$('info').disabled=!ready||autoplay.active;
+  $('settings').disabled=!ready||autoplay.active;
   $('balance-panel').hidden=!!options?.replay;
   if(!options?.replay){
     const hasAmount=Number.isSafeInteger(amount)&&amount>0&&!!cost;
@@ -336,7 +317,6 @@ async function runDemoScenario(id,label){
   transition('ready');
 }
 
-$('info').onclick=()=>showRules(options?.social);
 $('auto-open').onclick=()=>{
   const mode=currentMode();
   if(!mode)return;
@@ -359,30 +339,40 @@ $('amount-open').onclick=()=>{
     choice.setAttribute('aria-pressed',String(level===amount));
   }
 };
-$('settings').onclick=()=>{
-  panel('settings','Settings','<p>Audio is disabled in this visual-only demo.</p>');
-  mountDemoTools($('panel-content'),runDemoScenario);
-};
+$('settings').onclick=openMenu;
+function openMenu(){
+  panel('menu','Menu');
+  action('Game information',()=>showRules(options?.social));
+  action('Visual test scenarios',()=>{
+    panel('settings','Visual test scenarios');
+    mountDemoTools($('panel-content'),runDemoScenario);
+    action('Back to Menu',openMenu);
+  });
+  action('Settings',()=>{
+    panel('menu','Settings','<p>Audio is disabled in this visual-only demo.</p>');
+    action('Back to Menu',openMenu);
+  });
+}
 $('buy-open').onclick=()=>{
   if(state!=='ready'||flags.disabledBuyFeature||autoplay.active)return;
-  showFeatures({social:options.social,features:available.filter(mode=>mode.feature),amount,balance,money,play});
+  const ante=available.find(mode=>mode.name==='ANTE');
+  showFeatures({
+    social:options.social,features:available.filter(mode=>mode.feature),ante,enhanced,
+    canSelectAnte:validAmount(ante),selectAnte,amount,balance,money,play
+  });
 };
-$('ante-open').onclick=()=>{
-  if(state!=='ready'||flags.disabledBuyFeature||autoplay.active)return;
-  if(enhanced){enhanced=false;controls();readouts();return;}
-  if(!validAmount(available.find(mode=>mode.name==='ANTE')))return;
-  const name=options.social?'Ante':'Ante Bet';
-  panel('feature-confirm',name,'<p>'+name+' increases the chance of triggering free spins. It costs 3× the base '+(options.social?'play amount':'stake')+' in this fictional-credit demo.</p><dl class="recovery-details"><dt>'+ (options.social?'Base play amount':'Base stake')+'</dt><dd>'+money(amount)+'</dd><dt>Multiplier</dt><dd>3×</dd><dt>Total per spin</dt><dd>'+money(amount*3)+'</dd></dl>');
-  action('Cancel',()=>$('panel').close());
-  action('Enable '+name,()=>{enhanced=true;controls();readouts();$('panel').close();},{primary:true});
-};
+function selectAnte(enabled){
+  const ante=available.find(mode=>mode.name==='ANTE');
+  if(state!=='ready'||flags.disabledBuyFeature||autoplay.active||options?.replay||(enabled&&!validAmount(ante)))return;
+  enhanced=enabled;
+  controls();
+  readouts();
+}
 $('close').onclick=()=>$('panel').close();
 $('spin').onclick=()=>void play(available.find(mode=>mode.name===(enhanced?'ANTE':'BASE')));
 $('retry').onclick=()=>void connect();
 $('replay-action').onclick=()=>void watchReplay();
 $('turbo').onclick=()=>{if(!flags.disabledTurbo){wallet.settings.turbo=!wallet.settings.turbo;$('turbo').setAttribute('aria-pressed',String(wallet.settings.turbo));}};
-$('mute').setAttribute('aria-pressed',String(wallet.settings.mute));
-$('mute').onclick=()=>{wallet.settings.mute=!wallet.settings.mute;saveAudioPreferences();audio.refresh();$('mute').setAttribute('aria-pressed',String(wallet.settings.mute));};
 function adjust(offset){
   if(state!=='ready'||options.replay||autoplay.active)return;
   const choices=modeLevels(currentMode());

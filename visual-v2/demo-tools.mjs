@@ -5,7 +5,7 @@ const scenarios={
   'chaos-12':'Chaos · 12 points','chaos-30':'Chaos · 30 points','chaos-55':'Chaos · 55 points',
   'chaos-85':'Chaos · 85 points','chaos-120':'Chaos · 120 points'
 };
-const version='visual-v2-silent-1';
+const version=document.querySelector('meta[name="goonageddon-build"]').content;
 let last='Normal play',draft='';
 export function noteNormal(){last='Normal play';}
 function description(){

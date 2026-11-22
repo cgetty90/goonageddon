@@ -6,20 +6,22 @@ const body=$('panel-content');
 
 export function panel(kind,title,markup=''){
   dialog.dataset.skin=kind;
-  $('panel-title').textContent=title;
+  const heading=$('panel-title');
+  heading.textContent=title;
+  heading.tabIndex=-1;
   body.innerHTML=markup;
   body.scrollTop=0;
   if(!dialog.open)dialog.showModal();
+  heading.focus();
 }
-export function action(label,handler,{disabled=false,primary=false,markup}={}){
+export function action(label,handler,{disabled=false,primary=false,target=body}={}){
   const button=document.createElement('button');
   button.type='button';
   button.textContent=label;
   button.disabled=disabled;
   if(primary)button.classList.add('primary');
-  if(markup){button.innerHTML=markup;button.setAttribute('aria-label',label);}
   button.onclick=handler;
-  body.append(button);
+  target.append(button);
   return button;
 }
 export function showRules(social){
@@ -66,22 +68,51 @@ export function showAutoplay({label,amount,confirm}){
   });
 }
 
-export function showFeatures({social,features,amount,balance,money,play}){
-  const title=social?'Bonuses':'Bonus Buy';
+const featureArt={
+  ANTE:['scatter','satellite'],REGULAR:['cyclopz','scatter'],
+  SUPER:['octo-lab','scatter'],MYSTERY:['commander','scatter']
+};
+
+export function showFeatures({social,features,ante,enhanced,canSelectAnte,selectAnte,amount,balance,money,play}){
+  const title=social?'Features':'Bonus Buy';
+  const formatLabel=mode=>mode.name==='ANTE'?(social?'Ante':'Ante Bet'):mode.label+(social?' Bonus':' Bonus Buy');
+  const offered=ante?[ante,...features]:features;
   function choose(){
-    panel('features',title);
-    for(const mode of features){
+    panel('features',title,'<p class="card-intro">Choose a feature and review the total before confirming.</p><div id="feature-cards"></div><p class="feature-foot">Base play amount <strong>'+money(amount)+'</strong> <span>Fictional credits</span></p>');
+    for(const mode of offered){
+      const isAnte=mode.name==='ANTE';
       const total=money(amount*mode.cost);
-      const label=mode.label+' · '+total;
-      action(label,()=>{
-        panel('feature-confirm','Confirm feature','<div class="quote"><span>'+mode.label+' · '+mode.cost+'×</span><strong>'+total+'</strong></div><p>'+descriptions[mode.name]+'</p>');
-        action('Back',choose);
-        action('Start '+label,()=>{dialog.close();void play(mode);},{primary:true});
-      },{
-        disabled:amount*mode.cost>balance,
-        markup:'<img src="assets/visual/symbols/'+({REGULAR:'cyclopz',SUPER:'octo-lab',MYSTERY:'commander'})[mode.name]+'.webp" alt=""><span><strong>'+mode.label+'</strong><small>'+mode.cost+'× base</small></span><b>'+total+'</b>'
-      });
+      const label=formatLabel(mode);
+      const enabled=isAnte?enhanced||canSelectAnte:amount*mode.cost<=balance;
+      const [hero,prop]=featureArt[mode.name];
+      const card=document.createElement('article');
+      card.dataset.feature=mode.name.toLowerCase();
+      card.className='arcade-card';
+      card.innerHTML='<div class="card-art" aria-hidden="true"><img class="card-prop" src="assets/visual/symbols/'+prop+'.webp" alt=""><img class="card-hero" src="assets/visual/symbols/'+hero+'.webp" alt=""></div>'+
+        '<div class="card-copy"><h3>'+label+(isAnte?' <span class="ante-state">'+(enhanced?'On':'Off')+'</span>':'')+'</h3><p>'+descriptions[mode.name]+'</p></div>'+
+        '<div class="card-action"><p class="card-price"><strong>'+mode.cost+'×</strong> '+total+(isAnte?' per spin':'')+'</p></div>';
+      const reviewLabel=isAnte?(enhanced?'Review turning Ante off':'Review Ante'):'Review purchase';
+      const review=action(reviewLabel,()=>confirm(mode),{disabled:!enabled,target:card.querySelector('.card-action')});
+      review.setAttribute('aria-label',isAnte?reviewLabel:'Review '+label+' · '+total);
+      $('feature-cards').append(card);
     }
+  }
+  function confirm(mode){
+    const label=formatLabel(mode);
+    const total=money(amount*mode.cost);
+    const isAnte=mode.name==='ANTE';
+    const heading=isAnte?(enhanced?'Turn off Ante':'Enable Ante'):'Confirm bonus purchase';
+    const amountText=isAnte?money(amount*(enhanced?1:mode.cost)):total;
+    const detail=isAnte
+      ?'This changes the amount of future spins. A spin starts when you select Spin.'
+      :descriptions[mode.name]+' Confirm to start one bonus round.';
+    panel('feature-confirm',heading,'<div class="quote"><span>'+label+(isAnte?' · total per spin':' · '+mode.cost+'×')+'</span><strong>'+amountText+'</strong></div><p>'+detail+'</p>');
+    action('Back',choose);
+    action(isAnte?heading:'Start '+mode.label+' · '+total,()=>{
+      dialog.close();
+      if(isAnte)selectAnte(!enhanced);
+      else void play(mode);
+    },{primary:true});
   }
   choose();
 }

@@ -4,6 +4,7 @@ import {entryScenes,selectEnding,cinematicDuration} from "./bonus-cinema.mjs";
 import {unitsAt} from "./round-validation.mjs";
 import {symbolArt} from './visual-art.mjs';
 import {animateCells,animateCinema,cinemaArt,warmReactions} from './visual-reactions.mjs';
+import {mountForegroundPilot} from './foreground-pilot.mjs';
 const SCATTER=14, EXPAND=15, WILD=16;
 const artFor=asset=>assetFile(symbolArt(asset));
 const displaySymbol=(asset,name)=>asset==='alien-boss'?'Goon Commander':name;
@@ -11,6 +12,7 @@ const $ = id => document.getElementById(id);
 const assetFile = path => globalThis.__toonAssets?.[path] || path;
 export function createRenderer({wallet, money, audio, status, transition}) {
 warmReactions();
+const react=mountForegroundPilot($('pilot-rig'));
 const prefersReduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
 let feature=-1,shownWin=0,shownPoints=0,shownStage=0,cells=[],ticker=0;
 const wait=(ms,fast=false)=>new Promise(done=>setTimeout(done,fast?0:prefersReduced?Math.min(ms,45):wallet.settings.turbo?Math.min(ms*.23,260):ms));
@@ -59,6 +61,7 @@ function winCounter(units,fast){
   cancelAnimationFrame(ticker);
   const previous=shownWin;
   shownWin=units;
+  $('win-panel').toggleAttribute('data-award',units>0);
   winFeedback?.cancel();
   if(units>previous&&!prefersReduced&&!wallet.settings.turbo){
     winFeedback=$('win-panel').animate([
@@ -336,7 +339,10 @@ async function animateRound(round, amount, cursor, checkpoint){
           }
           await spinReels(e.board);
         } else render(e.board);
-        if(!e.bonus&&e.scatters>1){audio.cue('scatter');status(e.scatters+' scatters landed');await wait(220,fast);}
+        if(!e.bonus&&e.scatters>1){
+          if(!fast)react('anticipation');
+          audio.cue('scatter');status(e.scatters+' scatters landed');await wait(220,fast);
+        }
         break;
       }
       case 'expand':
@@ -361,6 +367,7 @@ async function animateRound(round, amount, cursor, checkpoint){
         status(e.groups.reduce((n,g)=>n+g.ways,0).toLocaleString('en-GB')+' winning ways');
         winCounter(value(e.total),fast);
         if(!fast){
+          react('win');
           audio.cue(e.paid>=1500?'large':'win');
           e.positions.forEach(([c,r])=>cells[c][r].classList.add('winning'));
           if(!wallet.settings.turbo)animateCells(e.positions.map(([c,r])=>cells[c][r]),'win',530);
@@ -385,6 +392,7 @@ async function animateRound(round, amount, cursor, checkpoint){
           tier:e.tier,title:tiers[e.tier],award:e.remaining+' FREE SPINS',scatters:scatterCount||e.tier+3
         });
         featurePanel(e.tier,e.remaining);
+        if(!fast)react('bonus');
         status(tiers[e.tier]+' activated · '+e.remaining+' free spins');
         await wait(420,fast);
         break;
@@ -459,6 +467,7 @@ async function showPurchaseScatters(tier,board,fast){
   const game=$('game');
   const effects=$('effect');
   status('Incoming UFO scatters');
+  if(!fast)react('anticipation');
   render(board);
   game.classList.add('beaming','purchase-flight');
   const landingOrder=[0,2,4,1,5];

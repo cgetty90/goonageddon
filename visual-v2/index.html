@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self' blob:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="goonageddon-build" content="visual-v2-silent-1">
+<meta name="goonageddon-build" content="visual-v2-arcade-review-1">
 <meta name="theme-color" content="#100728">
 <title>GOONAGEDDON · Visual V2 Demo</title>
 <meta name="description" content="GOONAGEDDON, a neon sci-fi slot game.">
@@ -15,15 +15,23 @@
 <link rel="stylesheet" href="dockmaster.css">
 <link rel="stylesheet" href="command-bridge.css">
 <link rel="stylesheet" href="demo.css">
+<link rel="stylesheet" href="arcade.css">
 </head>
 <body>
 <main id="game" aria-label="Goonageddon">
-  <div class="salvage" aria-hidden="true"><i class="nebula"></i><i class="stars"></i><img class="orb-planet" src="assets/visual/symbols/planet.webp" alt=""><img class="orb-rock" src="assets/visual/symbols/asteroid.webp" alt=""><img class="orb-gantry" src="assets/visual/environment/gantry.webp" alt=""><img class="orb-tug" src="assets/visual/environment/tug.webp" alt=""><i class="beacon"></i></div>
+  <div class="salvage" aria-hidden="true">
+    <i class="nebula"></i><i class="stars"></i>
+    <img class="orb-planet" src="assets/visual/symbols/planet.webp" alt="">
+    <img class="orb-rock" src="assets/visual/symbols/asteroid.webp" alt="">
+    <img class="orb-gantry" src="assets/visual/environment/gantry.webp" alt="">
+    <img class="orb-tug" src="assets/visual/environment/tug.webp" alt="">
+    <img class="orb-saucer" src="assets/visual/symbols/scatter.webp" alt="">
+    <i class="beacon"></i><i class="bay-dust"></i><i class="bay-crane"></i>
+  </div>
   <header>
     
     <div class="dock-crew" aria-hidden="true">
       <img class="dock-cyclopz" src="assets/visual/symbols/cyclopz.webp" alt="">
-      <img class="dock-commander" src="assets/visual/symbols/commander.webp" alt="">
       <img class="dock-octo" src="assets/visual/symbols/octo-lab.webp" alt="">
       <img class="dock-cow" src="assets/visual/symbols/space-cow.webp" alt="">
     </div>
@@ -32,6 +40,10 @@
     <div id="mode" class="modeplate" hidden></div>
   </header>
   <div class="stage">
+    <div class="arcade-pilot" aria-hidden="true">
+      <div class="pilot-pad"></div>
+      <div class="pilot-body"><img src="assets/goon-v5/commander.png" alt=""><canvas id="pilot-rig" width="400" height="400"></canvas></div>
+    </div>
     <aside id="chaos" class="plate" aria-labelledby="chaos-title" hidden>
       <div class="chaos-heading">
         <h2 id="chaos-title">Chaos Progression</h2>
@@ -53,16 +65,18 @@
       <img id="beam-ship" src="assets/visual/environment/tug.webp" alt=""><div id="effect" aria-hidden="true"></div>
     </section>
   </div>
-  <p id="status" aria-live="polite">Connecting to Engine</p>
+  <p id="status" aria-live="polite">Opening demo</p>
   <div id="round-actions" class="candidate-actions"><button id="retry" hidden>Reconnect</button><button id="replay-action" hidden>Play replay</button><span id="jurisdiction-readout"></span><button id="auto-stop" hidden>Stop Autoplay <span id="auto-left"></span></button></div>
   <section class="console" aria-label="Game controls">
-    <div class="bridge-actions"><button id="ante-open" class="buy-launch" aria-haspopup="dialog" aria-controls="panel" aria-pressed="false">ANTE <b>OFF</b></button><button id="buy-open" class="buy-launch" aria-haspopup="dialog" aria-controls="panel">BONUS BUY</button></div>
-    <div class="tools plate"><button id="info" aria-label="Game information" class="small"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v1"/></svg></button><button id="mute" disabled title="Audio disabled in this visual-only demo" aria-label="Audio disabled in this visual-only demo" aria-pressed="true" class="small"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h4l4-4v12l-4-4H4zM16 9q4 3 0 6"/><path class="mute-slash" d="m4 20 16-16"/></svg></button></div>
-    <div class="stake plate"><button id="minus" class="small" aria-label="Decrease amount">−</button><button id="amount-open" aria-label="Choose amount" aria-haspopup="dialog"><span id="bet-caption">PLAY AMOUNT</span><small id="base-stake" hidden></small><strong id="stake">—</strong></button><button id="plus" class="small" aria-label="Increase amount">+</button></div>
-    <button id="spin" aria-label="Spin" title="Spin (Space)"><svg aria-hidden="true" viewBox="0 0 40 40"><path d="M6 16A14 14 0 0 1 31 9l3 4M34 24A14 14 0 0 1 9 31l-3-4M34 6v7h-7M6 34v-7h7"/></svg><span>Spin</span></button>
-    <div class="tools play-tools plate"><button id="auto-open" class="small" aria-label="Autoplay" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 9a7.5 7.5 0 1 0 .3 6M19 4v5h-5"/><path d="m9 15 3-6 3 6m-5-2h4"/></svg></button><button id="turbo" aria-label="Turbo" aria-pressed="false" class="small"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m13 3-7 10h5l-1 8 8-11h-5z"/></svg></button><button id="settings" aria-label="Settings" class="small"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="8" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="18" r="2"/></svg></button></div>
-    <div id="win-panel" class="readout plate"><span>WIN</span><strong id="win">—</strong></div>
+    <div class="arcade-left">
+      <button id="settings" type="button" aria-label="Menu" aria-haspopup="dialog" aria-controls="panel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      <button id="buy-open" type="button" aria-haspopup="dialog" aria-controls="panel"><svg viewBox="0 0 32 32" aria-hidden="true"><ellipse cx="16" cy="15" rx="11" ry="4.2"/><path d="M10 11a6 6 0 0 1 12 0M8 23l-2 4m10-5v5m8-4 2 4M12 15h.1m7.8 0h.1"/></svg><span>Bonus Buy</span><small id="ante-indicator" hidden>Ante on</small></button>
+    </div>
     <div id="balance-panel" class="readout plate"><span>BALANCE</span><strong id="balance">—</strong></div>
+    <div class="stake plate"><button id="minus" class="small" aria-label="Decrease amount">−</button><button id="amount-open" aria-label="Choose amount" aria-haspopup="dialog"><span id="bet-caption">PLAY AMOUNT</span><small id="base-stake" hidden></small><strong id="stake">—</strong></button><button id="plus" class="small" aria-label="Increase amount">+</button></div>
+    <div id="win-panel" class="readout plate"><span>WIN</span><strong id="win">—</strong></div>
+    <div class="tools play-tools plate"><button id="auto-open" class="small" aria-label="Autoplay" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 9a7.5 7.5 0 1 0 .3 6M19 4v5h-5"/><path d="m9 15 3-6 3 6m-5-2h4"/></svg></button><button id="turbo" aria-label="Turbo" aria-pressed="false" class="small"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m13 3-7 10h5l-1 8 8-11h-5z"/></svg></button></div>
+    <div class="spin-housing"><button id="spin" aria-label="Spin" title="Spin (Space)"><svg aria-hidden="true" viewBox="0 0 40 40"><path d="M6 16A14 14 0 0 1 31 9l3 4M34 24A14 14 0 0 1 9 31l-3-4M34 6v7h-7M6 34v-7h7"/></svg><span>Spin</span></button></div>
   </section>
 </main>
 

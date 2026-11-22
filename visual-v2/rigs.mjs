@@ -26,7 +26,7 @@ function sprite(ctx,img,x,y,w,h,angle=0,sx=1,sy=1){
   const dw=img.naturalWidth*ratio,dh=img.naturalHeight*ratio;
   ctx.drawImage(img,-dw/2,-dh/2,dw,dh);ctx.restore();
 }
-export function pose(ctx,layered,t,rest=false,expression='idle'){
+export function pose(ctx,layered,t,rest=false,expression='idle',visorLift=0){
   const {rig,parts}=layered;
   const idle=rest?0:Math.sin(t*2);
   const phase=Math.min(1,Math.max(0,t));
@@ -44,8 +44,8 @@ export function pose(ctx,layered,t,rest=false,expression='idle'){
     const gaze=action==='eye',limb=action==='limb'||action==='counter',direction=action==='counter'?-1:1;
     const mouth=action==='tongue',visor=action==='visor';
     const dx=gaze?idle*6+reaction*(octopus?6:3):limb?reaction*(octopus?23:11)*direction:0;
-    const dy=mouth?idle*3+reaction*(cow?22:15):limb?-reaction*(octopus?12:23):visor?-reaction*16:0;
-    const angle=limb?direction*(idle*.105+reaction*(octopus?.52:.33)):mouth?idle*.12:visor?reaction*.05:0;
+    const dy=mouth?idle*3+reaction*(cow?22:15):limb?-reaction*(octopus?12:23):visor?-reaction*16-visorLift*25:0;
+    const angle=limb?direction*(idle*.105+reaction*(octopus?.52:.33)):mouth?idle*.12:visor?reaction*.05-visorLift*.15:0;
     if(gaze&&blink>.74)continue;
     sprite(ctx,parts[id],x+dx,y+dy,w,h,angle,1,mouth?1+reaction*.16:gaze&&cyclops?1+reaction*.11:1);
   }
