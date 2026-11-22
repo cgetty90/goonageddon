@@ -7,7 +7,6 @@
  --arcade-spin:clamp(78px,11.2dvh,112px);
  --arcade-inset:clamp(14px,1.55vw,29px);
  --arcade-status:16px;
- --arcade-edge:#956e91;
  --arcade-amber:#ffd293;
  width:100%;max-width:none;min-height:100dvh;padding:7px 3px;
  gap:0;align-items:center;overflow:clip;background:#140b20;
@@ -22,7 +21,7 @@
 #game .salvage .stars{opacity:.61;animation-duration:49s}
 #game .orb-planet{left:-3%;right:auto;top:12%;width:min(22vw,330px);animation:arcade-orbit 32s ease-in-out infinite alternate}
 #game .orb-rock{left:9%;top:25%}
-#game .orb-gantry{opacity:.58}
+#game .orb-gantry{opacity:.58;animation:arcade-gantry 25s ease-in-out infinite alternate}
 #game .orb-tug{left:1%;top:51%;width:min(11vw,174px);animation:arcade-tug 17s ease-in-out infinite}
 #game .orb-saucer{right:3%;top:11%;width:clamp(34px,5vw,78px);animation:arcade-saucer 19s linear -4s infinite}
 #game .beacon{animation:arcade-beacon 7s ease-in-out infinite;background:radial-gradient(ellipse at 13% 69%,#c26e3f77,transparent 23%),radial-gradient(ellipse at 91% 72%,#d98c5670,transparent 20%)}
@@ -44,6 +43,7 @@
  box-shadow:0 0 8px #c1783b;
 }
 @keyframes arcade-orbit{to{transform:translate3d(23px,15px,0) rotate(6deg)}}
+@keyframes arcade-gantry{from{transform:scale(1.02)}to{transform:translate3d(6px,-3px,0) scale(1.035)}}
 @keyframes arcade-tug{0%,100%{transform:translate3d(-5%,5%,0) rotate(-4deg)}48%,59%{transform:translate3d(37%,-38%,0) rotate(3deg)}}
 @keyframes arcade-saucer{
  0%,10%{transform:translate3d(145%,15%,0) rotate(-12deg);opacity:0}
@@ -117,40 +117,58 @@
 
 #game #status{position:relative;z-index:2;margin:0 auto;height:var(--arcade-status);min-height:var(--arcade-status);max-width:var(--arcade-span);line-height:1.1;padding:1px 9px;font-size:clamp(9px,1vw,14px)}
 #game .console,#game[data-tier] .console{
- grid-template:"balance amount win"/minmax(0,1fr) auto minmax(0,1fr);grid-template-rows:auto;
- min-height:70px;padding:6px clamp(14px,2vw,33px) 9px;gap:10px;position:relative;
- border:2px solid var(--arcade-edge);border-top-color:#be99b0;border-bottom:5px solid #34223e;
- border-radius:10px 10px 25px 25px;
- background:linear-gradient(#a6849f80,transparent 12%),linear-gradient(#654c69,#3c2b48 22%,#4d3554 27%,#2c1d36 67%,#291a30 81%,#70516a 97%,#392840);
- box-shadow:inset 0 0 0 3px #39293f,inset 0 0 0 4px #b2869d6d,0 9px 0 -3px #281a31,0 15px 22px #07030cb5;
+ grid-template:"balance amount win"/minmax(0,1fr) minmax(0,1.38fr) minmax(0,1fr);
+ min-height:70px;padding:5px clamp(13px,1.7vw,28px) 8px;gap:5px;position:relative;
+ border:2px solid #927385;border-top-color:#d4b2bd;border-bottom:5px solid #2d1f35;
+ border-radius:10px 10px 21px 21px;
+ background:linear-gradient(106deg,#e1b5ca16 0 14%,transparent 14.5% 82%,#cc8cb317 82.5%),
+ linear-gradient(#816679,#3b2c47 17%,#513b58 26%,#281a32 65%,#21162c 80%,#775b70 96%,#3d2c48);
+ box-shadow:inset 0 0 0 3px #372840,inset 0 0 0 4px #bb98ad80,0 8px 0 -3px #281a31,0 15px 22px #07030cb5;
 }
 #game .console::before{
- inset:-9px 3% auto;height:12px;clip-path:polygon(0 100%,4% 0,19% 0,21% 63%,79% 63%,81% 0,96% 0,100% 100%);
- background:linear-gradient(90deg,#573850 8%,#edab6a 13% 22%,#674c68 27% 73%,#edab6a 78% 87%,#55364e 92%);
+ inset:-16px 2.3% auto;height:18px;border-radius:0;
+ clip-path:polygon(0 100%,4% 3%,20% 3%,23% 71%,77% 71%,80% 3%,96% 3%,100% 100%);
+ background:linear-gradient(#12091b35 28%,transparent 43%,#0b071250 65%),
+ linear-gradient(90deg,#7b5772 7%,#edab6a 13% 19%,#654a68 24% 76%,#edab6a 81% 87%,#714d68 92%);
 }
 #game .console::after{
- background:repeating-linear-gradient(120deg,#d18c50 0 6px,#76526d 6px 11px) 6% calc(100% - 3px)/10% 2px no-repeat,
- repeating-linear-gradient(60deg,#d18c50 0 6px,#76526d 6px 11px) 94% calc(100% - 3px)/10% 2px no-repeat;
+ background:radial-gradient(circle,#d5b5ad 1px,#402941 2px,transparent 3px) left bottom 4px/14px 11px no-repeat,
+ radial-gradient(circle,#d5b5ad 1px,#402941 2px,transparent 3px) right bottom 4px/14px 11px no-repeat,
+ linear-gradient(90deg,transparent 3%,#915637 18%,#efab67 29% 71%,#915637 82%,transparent 97%) bottom 3px center/92% 1px no-repeat;
 }
 #game .console>.readout,#game .console>.stake{
- min-height:48px;border-radius:8px;padding:3px;
- background:linear-gradient(162deg,#342541,#180f23 18%,#160e1e 71%,#2c1b32);
- border:1px solid #816482;border-top-color:#23152a;border-bottom-color:#be93aa;
- box-shadow:inset 0 2px 7px #08040e,0 2px 1px #1d1227;
+ min-height:50px;border-radius:7px;padding:3px;position:relative;
+ background:linear-gradient(112deg,#c3a1d117 0 28%,transparent 28.6% 80%,#c58dae14 80.4%),
+ repeating-linear-gradient(0deg,#d0aee60b 0 1px,transparent 1px 4px),linear-gradient(#281836,#140d21 48%,#2c1b37);
+ border:1px solid #917587;border-top-color:#91798c;border-bottom-color:#a87f9d;
+ box-shadow:0 0 0 1px #25172b,inset 0 0 0 2px #140d2199,inset 0 -3px 4px #08040e,0 2px 2px #1d1227;
 }
-#game #balance-panel{grid-area:balance;min-width:min(100%,155px);justify-self:start}
-#game #win-panel{grid-area:win;min-width:min(100%,125px);justify-self:end;visibility:hidden}
-#game #win-panel[data-award]{visibility:visible;border-color:#c08b66}
-#game .console .stake{display:grid;grid-template-columns:42px minmax(112px,auto) 42px;gap:3px;align-items:stretch}
+#game .console>.readout::before{
+ content:"";position:absolute;top:10px;bottom:10px;left:5px;width:2px;border-radius:2px;pointer-events:none;
+ background:#bd9adf;box-shadow:0 0 6px #c08be2a0;
+}
+#game #balance-panel{grid-area:balance;min-width:0;width:100%}
+#game #win-panel{grid-area:win;min-width:0;width:100%}
+#game #win-panel:not([data-award]) #win{color:#aa91b4}
+#game #win-panel[data-award]{border-color:#d3975f;background-color:#4e2d36}
+#game #win-panel[data-award]::before{background:#ffc87d;box-shadow:0 0 8px #ffa750}
+#game .console .stake{display:grid;grid-template-columns:clamp(42px,4.5vw,57px) minmax(0,1fr) clamp(42px,4.5vw,57px);gap:3px;align-items:stretch}
 #game .console .stake .small{width:100%;height:100%;min-height:39px;font-size:21px}
 #game .console :is(#minus,#plus){display:grid;place-items:center}
 #game .console button#amount-open{background:transparent;box-shadow:none;border:0;min-width:0;padding:1px 5px}
-#game .console #bet-caption,#game .console .readout span{font-size:9px;letter-spacing:.09em}
-#game .console :is(#stake,#win,#balance){font-size:clamp(15px,1.52vw,24px);line-height:1.13}
+#game .console #bet-caption,#game .console .readout span{
+ font:700 10px/1.05 "Bahnschrift","Segoe UI",sans-serif;letter-spacing:.145em;color:#ead4ef;
+}
+#game .console :is(#stake,#win,#balance){
+ font:750 clamp(15px,1.56vw,25px)/1.13 "Bahnschrift","Segoe UI",sans-serif;
+ font-variant-numeric:tabular-nums;letter-spacing:.025em;text-shadow:0 1px #1a0c22;
+}
 #game .console .readout strong{white-space:nowrap}
 #game .console #base-stake{font-size:10px;line-height:1.08}
 
 #game .arcade-left{position:absolute;right:calc(100% + clamp(12px,1.7vw,27px));bottom:6px;display:grid;gap:7px;justify-items:center}
+#game .arcade-left:has(#auto-stop:not([hidden])) :is(#settings,#buy-open){display:none}
+#game .console button#auto-stop,#bonus-cinema #cinema-stop{min-height:44px;min-width:72px;padding:3px 5px;font-weight:800}
 #game .console button:is(#settings,#buy-open,#auto-open,#turbo){display:grid;place-items:center;padding:0;border-radius:50%;font-size:9px;font-weight:900}
 #game .console button:is(#settings,#buy-open,#auto-open,#turbo) svg{fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
 #game .console #settings{width:44px;height:44px}
@@ -166,15 +184,22 @@
 #game .console #buy-open span{text-transform:uppercase;line-height:1}
 #ante-indicator{color:#edffa9;font-size:8px;text-transform:uppercase;line-height:1}
 .spin-housing{
- position:absolute;left:calc(100% + clamp(11px,1.25vw,23px));bottom:6px;z-index:1;
- padding:5px;border:2px solid #af8298;border-radius:36%;
- background:conic-gradient(from 46deg,#c38b9f,#39263e,#60506d 50%,#2c1a31,#c38b9f);
- box-shadow:0 0 0 2px #3e2a44,inset 0 0 0 3px #2d1c30,0 5px 8px #12091b;
+ position:absolute;left:calc(100% + clamp(11px,1.25vw,23px));bottom:6px;z-index:1;isolation:isolate;
+ padding:5px;border:2px solid #ba929f;border-bottom-color:#6e506b;border-radius:35%;
+ background:conic-gradient(from 43deg,#c99ba8,#432b46 24%,#59405f 46%,#ae849b 65%,#352037 82%,#d0a5b2);
+ box-shadow:0 0 0 2px #33223d,inset 0 0 0 2px #2a1b31,inset 0 0 0 4px #be90a47a,0 5px 9px #12091b;
 }
 .spin-housing::before{
- content:"";position:absolute;z-index:-1;inset:57% -9px -8px -49px;pointer-events:none;
- clip-path:polygon(0 24%,26% 24%,42% 0,88% 0,100% 45%,100% 100%,13% 100%,0 72%);
- background:linear-gradient(#947291,#3b2946 14%,#795670 28%,#26192e 71%,#4e334d);
+ content:"";position:absolute;z-index:-2;inset:54% -7px -10px -57px;pointer-events:none;
+ clip-path:polygon(0 25%,10% 9%,36% 9%,53% 0,92% 3%,100% 43%,100% 95%,15% 99%,0 77%);
+ background:radial-gradient(circle,#f0b59f 1px,#4a2f4c 2px,#22162e 4px,transparent 5px) 9% 47%/14px 14px no-repeat,
+ linear-gradient(90deg,transparent,#f0ad65 27%,#bb753c 52%,transparent) 7% 62%/61% 2px no-repeat,
+ linear-gradient(#c49aad,#553751 15%,#84657c 29%,#291d34 71%,#5b3d5a);
+}
+.spin-collar{
+ position:absolute;z-index:-1;inset:4px;border-radius:50%;pointer-events:none;
+ border:1px solid #f5cb9c80;background:conic-gradient(from -42deg,#ffd085 0deg 24deg,#613b55 30deg 148deg,#e7a35f 153deg 203deg,#48324d 210deg 328deg,#ffca80);
+ box-shadow:0 0 8px #e88846aa,0 0 0 2px #231928;
 }
 .spin-housing:has(#spin[hidden]){display:none}
 #game .console #spin,#game[data-tier] .console #spin{
@@ -185,8 +210,15 @@
 }
 #game .console #spin svg{width:calc(var(--arcade-spin) * .32);height:auto}
 #game .console #spin span{font-size:clamp(10px,1vw,16px);line-height:1}
+#game .console #spin{transition:transform .12s ease,box-shadow .14s ease,filter .14s ease}
+#game .console #spin:enabled:hover{filter:brightness(1.14);box-shadow:inset 0 0 0 2px #914739,inset 0 0 0 4px #ffe5b0,inset 0 -7px 11px #843c2b9b,0 0 15px #ffb75ca0}
 #game .console #spin:enabled:active{transform:translateY(2px);box-shadow:inset 0 0 0 2px #854639,inset 0 4px 10px #783521}
-#game .console #spin:disabled{color:#3f251e;opacity:.61;filter:saturate(.68)}
+#game .console #spin:disabled{color:#291c26;opacity:.81;filter:saturate(.36) brightness(.77);box-shadow:inset 0 0 0 2px #5c474c,inset 0 4px 9px #3b2a38}
+#game .spin-housing:has(#spin:disabled) .spin-collar{filter:saturate(.45) brightness(.62);box-shadow:0 0 0 2px #241829}
+#game:is([data-state="submitting"],[data-state="spin"],[data-state="purchase-entry"]) .spin-housing .spin-collar{
+ animation:spin-bearing .85s linear infinite;filter:none;box-shadow:0 0 10px #ffa84c8a,0 0 0 2px #241829;
+}
+@keyframes spin-bearing{to{transform:rotate(1turn)}}
 #game .console .play-tools{
  position:absolute;left:calc(100% + clamp(11px,1.25vw,23px));bottom:calc(var(--arcade-spin) + 28px);
  width:calc(var(--arcade-spin) + 12px);display:flex;justify-content:center;gap:7px;padding:0;
@@ -196,31 +228,68 @@
 #game .console button:is(#auto-open,#turbo)[aria-pressed="true"]{color:#ffdb9c;border-color:#ffba70;background:linear-gradient(#80553f,#452d44)}
 
 #panel[data-skin="features"]{width:min(1120px,94vw);max-width:none;max-height:93dvh}
-#panel[data-skin="features"]>header{padding:16px 22px 10px;border-bottom:0}
+#panel:is([data-skin="features"],[data-skin="feature-confirm"]){
+ border-color:#c09ba9;border-bottom-color:#885d83;border-radius:16px;
+ background:linear-gradient(126deg,#6c496039,transparent 36%),linear-gradient(#3f2b4a,#20142c 40%,#1d1328 78%,#32203a);
+ box-shadow:inset 0 0 0 2px #23182d,inset 0 0 0 3px #8e6e886e,0 15px 44px #0a0411d4;
+}
+#panel .panel-brand{display:none}
+#panel:is([data-skin="features"],[data-skin="feature-confirm"]) .panel-heading{display:flex;align-items:center;gap:13px;min-width:0}
+#panel:is([data-skin="features"],[data-skin="feature-confirm"]) .panel-heading .panel-brand{
+ display:block;width:clamp(111px,15vw,194px);height:36px;object-fit:contain;filter:drop-shadow(0 2px 4px #0d0615);
+}
+#panel:is([data-skin="features"],[data-skin="feature-confirm"])>header{
+ padding:14px 19px;border-bottom:1px solid #c293a651;
+ background:linear-gradient(102deg,#a2819740,#1e122c 56%,#6b475a63),linear-gradient(#503b5a,#261931);
+}
+#panel:is([data-skin="features"],[data-skin="feature-confirm"]) #panel-title{
+ font:750 clamp(15px,2.2vw,27px)/1.1 "Bahnschrift","Segoe UI",sans-serif;
+ letter-spacing:.07em;color:#ffe9c6;text-shadow:0 1px 3px #10071a;
+}
 #panel #close{width:44px;height:44px;flex:none}
+#panel-title:focus{outline:none}
 #panel[data-skin="menu"] #panel-content button{width:100%;margin-bottom:6px;min-height:44px}
+#panel[data-skin="amount"] #panel-content button{min-height:44px}
 #panel #feature-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 #panel .arcade-card{
  --card-accent:#bfe882;--card-atmosphere:#548747;
- min-width:0;display:flex;flex-direction:column;overflow:hidden;
- border:1px solid #8e718c;border-top-color:var(--card-accent);border-radius:11px;
- background:linear-gradient(159deg,#362540,#1c1227 66%,#332136);box-shadow:0 4px 7px #0b06129c;
+ min-width:0;display:flex;flex-direction:column;overflow:hidden;position:relative;
+ padding:4px;border:1px solid #a08095;border-top-color:color-mix(in srgb,var(--card-accent) 72%,#d9b9b9);
+ border-radius:10px;
+ background:linear-gradient(140deg,#7d6077 0%,#47324e 16%,#1c1228 38%,#301d34 77%,#6d5169);
+ box-shadow:inset 0 0 0 2px #2d1c34,inset 0 0 0 3px #9477895c,0 4px 7px #0b06129c;
 }
 #panel .arcade-card[data-feature="regular"]{--card-accent:#d4b3ff;--card-atmosphere:#8250b4}
 #panel .arcade-card[data-feature="super"]{--card-accent:#ffc58f;--card-atmosphere:#a35843}
 #panel .arcade-card[data-feature="mystery"]{--card-accent:#9ddfff;--card-atmosphere:#397bad}
-.arcade-card .card-art{position:relative;height:clamp(97px,23dvh,210px);background:radial-gradient(ellipse at 50% 33%,var(--card-atmosphere),transparent 73%),url(assets/visual/environment/bay.webp) center/cover}
+.arcade-card .card-art{
+ position:relative;height:clamp(97px,23dvh,210px);overflow:hidden;border-radius:5px 5px 1px 1px;
+ border:1px solid #a07a9359;box-shadow:inset 0 -8px 11px #1a0c255e;
+ background:radial-gradient(ellipse at 50% 33%,var(--card-atmosphere),transparent 73%),url(assets/visual/environment/bay.webp) center/cover;
+}
 .arcade-card .card-art img{position:absolute;object-fit:contain;filter:drop-shadow(0 5px 5px #0c0717)}
 #panel .arcade-card .card-hero{width:72%;height:94%;bottom:2%;left:8%}
 #panel .arcade-card .card-prop{width:45%;height:65%;top:5%;right:4%;transform:rotate(10deg)}
 .arcade-card .card-copy{padding:10px 10px 4px;flex:1}
-#panel .arcade-card h3{margin:0;color:var(--card-accent);font-size:clamp(15px,1.6vw,22px);line-height:1.12}
+#panel .arcade-card h3{margin:0;color:var(--card-accent);font:750 clamp(15px,1.6vw,22px)/1.12 "Bahnschrift","Segoe UI",sans-serif}
 #panel .arcade-card .card-copy p{font-size:13px;line-height:1.37;margin:5px 0}
 .ante-state{font-size:.69em;padding:2px 4px;border-radius:4px;background:#2c3723;color:#e6f1bb}
 .arcade-card .card-action{padding:5px 10px 10px}
 #panel .arcade-card .card-price{display:flex;align-items:baseline;flex-wrap:wrap;gap:5px;font-size:12px;margin:0 0 6px}
 .card-price strong{font-size:22px;line-height:1;color:var(--arcade-amber,#ffda9b)}
 #panel .card-action button{width:100%;min-height:44px;font-size:13px;line-height:1.1;margin:0}
+#panel .card-action button:not(.small){
+ border-color:#cf9879;border-bottom-color:#6d3c55;border-radius:6px;
+ color:#fff4d9;font-weight:800;letter-spacing:.025em;
+ background:linear-gradient(#a97062,#674454 44%,#493047 49%,#53334c);
+ box-shadow:inset 0 1px #ffe0a780,inset 0 -3px 4px #2c1735,0 2px 3px #13091d;
+}
+#panel .card-action button:enabled:hover{filter:brightness(1.14)}
+#panel .card-action button:enabled:active{transform:translateY(1px);box-shadow:inset 0 4px 6px #2b172a}
+#panel .arcade-card[data-feature="ante"] .card-action button:not(.small){
+ color:#eff7d0;border-color:#96a880;border-bottom-color:#454f48;
+ background:linear-gradient(#677653,#3c4842 46%,#29313a 50%,#3f493e);
+}
 #panel .feature-foot{display:flex;align-items:baseline;gap:7px;font-size:12px;margin:11px 0 3px;flex-wrap:wrap}
 #panel .feature-foot span{margin-left:auto}
 #panel .card-intro{font-size:14px;margin:0 0 13px}
@@ -269,6 +338,8 @@
  #game .console .play-tools{grid-area:tools;position:static;display:grid;justify-items:center;gap:5px;width:auto}
  #panel[data-skin="features"]{width:97vw;max-height:96dvh}
  #panel[data-skin="features"]>header{padding:7px 12px 3px}
+ #panel:is([data-skin="features"],[data-skin="feature-confirm"]) .panel-heading{gap:8px}
+ #panel:is([data-skin="features"],[data-skin="feature-confirm"]) .panel-heading .panel-brand{width:94px;height:29px}
  #panel #feature-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
  #panel[data-skin="features"] #panel-content{padding:3px 8px 7px}
  #panel .card-intro{font-size:11px;margin:0 0 6px}
@@ -330,25 +401,31 @@
 @media(orientation:landscape) and (max-width:520px) and (max-height:330px){
  #game,#game[data-tier]{--arcade-span:100%;--arcade-mast:27px;--arcade-aperture:calc(100dvh - 117px);--arcade-spin:46px;--arcade-chaos:49px;--arcade-inset:5px}
  #game>header h1,#game[data-tier]>header h1{width:151px}
- #game .console,#game[data-tier] .console{gap:3px;grid-template-columns:auto minmax(60px,1fr) auto minmax(36px,1fr) auto auto}
+ #game .console,#game[data-tier] .console{
+  gap:3px;grid-template-areas:"left balance amount win spin";
+  grid-template-columns:auto minmax(68px,1fr) minmax(76px,1.05fr) minmax(55px,.85fr) auto;
+ }
  #game .arcade-left{gap:3px}
- #game .console #settings{width:26px;height:26px}
- #game .console button#buy-open{width:32px;height:32px}
- #game .console #buy-open svg{width:14px;height:14px}
- #game .console #buy-open span,#ante-indicator{font-size:5px}
- #game .console .play-tools{gap:3px}
- #game .console .play-tools .small{width:26px;height:27px;padding:3px}
- #game .console .stake{grid-template-columns:24px minmax(49px,auto) 24px}
- #game .console .stake .small,#game .console button#amount-open{min-height:26px;font-size:15px}
- #game .console :is(#stake,#win,#balance){font-size:9px;line-height:1.08}
+ #game .console button#buy-open{width:44px;height:44px}
+ #game .console #buy-open svg{width:17px;height:17px}
+ #game .console #buy-open span,#ante-indicator{font-size:6px}
+ #game .console .play-tools,#game .console :is(#minus,#plus){display:none}
+ #game .console .stake{grid-template-columns:minmax(0,1fr)}
+ #game .console button#amount-open{min-height:44px}
+ #game .console :is(#stake,#win,#balance){font-size:10px;letter-spacing:0;line-height:1.08}
  #game .console :is(#win,#balance){white-space:normal}
  #game .console #bet-caption,#game .console #base-stake{font-size:6px}
+ #game .console>.readout::before{left:3px;width:1px}
+ #game .console button#auto-stop{width:91px}
  #game .stage #chaos:not([hidden]){margin-bottom:2px}
  /* Chaos carries visible status in the smallest bonus layout. Keep the live region for announcements. */
  #game[data-tier] #status{position:absolute;width:1px;height:1px;min-height:1px;padding:0;overflow:hidden;clip-path:inset(50%)}
  #panel #feature-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+ #panel[data-skin="autoplay"] #panel-content button,#panel[data-skin="autoplay"] .spin-tiles label,
+ #panel[data-skin="info"] #rule-tabs button{min-height:44px}
+ #panel[data-skin="autoplay"] .spin-tiles span{display:grid;place-items:center}
 }
 @media(prefers-reduced-motion:reduce){
- #game .salvage *,#game .pilot-body{animation:none!important}
+ #game .salvage *,#game .pilot-body,#game .spin-collar{animation:none!important}
  #game .orb-saucer,#game .bay-dust{display:none}
 }

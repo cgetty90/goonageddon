@@ -17,10 +17,12 @@ export function mountForegroundPilot(canvas){
     if(now-last>=1000/30){
       last=now;
       if(expression&&now-started>=duration[expression])expression='';
-      const t=expression?(now-started)/duration[expression]:now/1000;
-      const phase=(now/1000+1.55)%6.2;
-      const lift=expression||phase>0.53?0:Math.sin(phase/0.53*Math.PI)**2;
-      pose(ctx,rig,t,false,expression||'idle',lift);
+      const clock=now/1000;
+      const t=expression?(now-started)/duration[expression]:clock;
+      const phase=(clock+1.55)%6.2;
+      const rise=Math.max(0,Math.min(1,phase/.18,(.82-phase)/.25));
+      const lift=expression?0:rise*rise*(3-2*rise);
+      pose(ctx,rig,t,false,expression||'idle',{visorLift:lift,foregroundClock:clock});
       pilot.dataset.reaction=expression||'idle';
       pilot.toggleAttribute('data-visor-lift',lift>.2);
     }

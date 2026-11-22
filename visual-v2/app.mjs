@@ -11,6 +11,7 @@ import {createAudio} from './audio.mjs';
 import {createRenderer} from './renderer.mjs';
 
 const $=id=>document.getElementById(id);
+const compactControls=matchMedia('(orientation: landscape) and (max-width: 520px) and (max-height: 330px)');
 const wallet={settings:{music:0,effects:0,mute:true,turbo:false}};
 const audio=createAudio(()=>wallet.settings);
 const opened=Date.now();
@@ -317,7 +318,8 @@ async function runDemoScenario(id,label){
   transition('ready');
 }
 
-$('auto-open').onclick=()=>{
+$('auto-open').onclick=openAutoplay;
+function openAutoplay(){
   const mode=currentMode();
   if(!mode)return;
   const quote={...mode,amount};
@@ -327,7 +329,7 @@ $('auto-open').onclick=()=>{
     $('panel').close();
     if(autoplay.start(count,quote))$('auto-stop').focus();
   }});
-};
+}
 for(const id of ['auto-stop','cinema-stop'])$(id).onclick=()=>autoplay.stop();
 document.addEventListener('visibilitychange',()=>{if(document.hidden)autoplay.stop('stopped');});
 $('amount-open').onclick=()=>{
@@ -342,6 +344,14 @@ $('amount-open').onclick=()=>{
 $('settings').onclick=openMenu;
 function openMenu(){
   panel('menu','Menu');
+  if(compactControls.matches){
+    if(!$('auto-open').hidden)action('Autoplay',openAutoplay,{disabled:$('auto-open').disabled});
+    if(!$('turbo').hidden){
+      const turbo=action('Turbo',()=>{toggleTurbo();update();},{disabled:$('turbo').disabled});
+      const update=()=>turbo.setAttribute('aria-pressed',String(wallet.settings.turbo));
+      update();
+    }
+  }
   action('Game information',()=>showRules(options?.social));
   action('Visual test scenarios',()=>{
     panel('settings','Visual test scenarios');
@@ -353,6 +363,9 @@ function openMenu(){
     action('Back to Menu',openMenu);
   });
 }
+compactControls.addEventListener('change',()=>{
+  if($('panel').open&&$('panel-title').textContent==='Menu')openMenu();
+});
 $('buy-open').onclick=()=>{
   if(state!=='ready'||flags.disabledBuyFeature||autoplay.active)return;
   const ante=available.find(mode=>mode.name==='ANTE');
@@ -372,7 +385,12 @@ $('close').onclick=()=>$('panel').close();
 $('spin').onclick=()=>void play(available.find(mode=>mode.name===(enhanced?'ANTE':'BASE')));
 $('retry').onclick=()=>void connect();
 $('replay-action').onclick=()=>void watchReplay();
-$('turbo').onclick=()=>{if(!flags.disabledTurbo){wallet.settings.turbo=!wallet.settings.turbo;$('turbo').setAttribute('aria-pressed',String(wallet.settings.turbo));}};
+$('turbo').onclick=toggleTurbo;
+function toggleTurbo(){
+  if($('turbo').disabled||flags.disabledTurbo||options?.replay)return;
+  wallet.settings.turbo=!wallet.settings.turbo;
+  $('turbo').setAttribute('aria-pressed',String(wallet.settings.turbo));
+}
 function adjust(offset){
   if(state!=='ready'||options.replay||autoplay.active)return;
   const choices=modeLevels(currentMode());
