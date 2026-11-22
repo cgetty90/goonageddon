@@ -1,0 +1,14 @@
+.demo-badge{position:absolute;top:14px;left:16px;z-index:5;pointer-events:none;background:#251532;border:1px solid #9e6d8c;border-radius:5px;padding:4px 7px;color:#ffe0a1;font:800 10px/1 system-ui,sans-serif;letter-spacing:.08em}
+#demo-tools{display:grid;gap:10px;margin-top:10px}
+#demo-tools select,#demo-tools textarea{display:block;width:100%;background:#1a1126;color:#fff;padding:6px;font:inherit;border:1px solid #8e66a7;border-radius:5px}
+#demo-tools textarea{min-height:66px}
+@media(max-width:760px) and (orientation:portrait){.demo-badge{top:auto;bottom:1px;left:2px;padding:2px 4px;font-size:7px}}
+@media(max-height:400px) and (orientation:landscape){.demo-badge{top:1px;left:1px;padding:2px 4px;font-size:6px}}
+@media(max-height:400px) and (orientation:landscape){
+ #game,#game[data-tier]{gap:0}
+}
+@media(max-width:760px),(max-height:400px){
+ #demo-tools select,#demo-tools textarea{font-size:16px}
+ #demo-tools button{min-height:44px}
+ #game button{touch-action:manipulation}
+}

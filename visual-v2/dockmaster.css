@@ -1,0 +1,244 @@
+/* Dockmaster uses the existing render cells and Engine control IDs. */
+#game,#game[data-tier]{
+ --fixed-slot:clamp(50px,calc((100dvh - 222px) / 6),123px);
+ --dock-inset:14px;--dock-side:21px;
+ width:min(100%,1550px);min-height:100svh;padding:2px clamp(7px,1.8vw,26px);gap:2px;justify-content:center;
+ background:#180d26 url(assets/visual/environment/bay.webp) center/cover no-repeat
+}
+#game>header,#game[data-tier]>header{position:relative;display:block;height:81px;min-height:81px;z-index:6}
+#game>header h1,#game[data-tier]>header h1{
+ position:absolute;inset:auto auto -3px 50%;transform:translateX(-50%);
+ width:min(38%,495px);height:76px;margin:0;display:grid;place-items:center;z-index:3;
+ background:url(assets/dockmaster/mast.webp) center/contain no-repeat;
+ filter:drop-shadow(0 4px 4px #080311)
+}
+#game>header h1 img{width:72%;height:auto;max-height:67px;object-fit:contain;mask-image:none}
+.dock-crew{
+ height:81px;width:min(74%,910px);margin:auto;
+ display:grid;grid-template-columns:84px 110px minmax(0,1fr) 91px 89px;
+ grid-template-rows:81px;gap:5px;align-items:end;pointer-events:none
+}
+.dock-crew img{width:100%;height:77px;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 4px 4px #08040d) drop-shadow(0 0 7px #af74de40)}
+.dock-crew .dock-octo{grid-column:4}.dock-crew .dock-cow{grid-column:5}
+.dock-crew .dock-commander{height:81px}
+#game .stage,#game[data-tier] .stage{position:relative;display:block;width:100%;margin-inline:auto}
+#game .stage .machine,#game[data-tier] .stage .machine{
+ position:relative;display:block;padding:var(--dock-inset) var(--dock-side);
+ margin:0;border:1px solid #a99ab6;border-radius:29px;isolation:isolate;
+ background:linear-gradient(140deg,#4b4055,#231b31 25%,#483350 70%,#21152b);
+ box-shadow:inset 0 0 0 3px #292134,0 8px 18px #090313b0
+}
+.dock-rim{position:absolute;inset:0;z-index:5;pointer-events:none;border:20px solid transparent;border-image:url(assets/dockmaster/rim.webp) 113 repeat}
+#game .machine-head,#game .machine-foot{display:none}
+#game .reels{
+ position:relative;z-index:1;height:calc(var(--fixed-slot)*6 + 2px);min-height:0;
+ gap:0;padding:0;border-radius:16px;align-items:end;
+ background:linear-gradient(180deg,#110a1ee8,#130c20 71%,#100917);
+ box-shadow:inset 0 3px 12px #06030bce,inset 0 -6px 11px #050308af
+}
+#game .reels::before{
+ content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;opacity:.82;
+ background:repeating-linear-gradient(90deg,transparent 0 calc(100% / 6 - 2px),#8e719b47 calc(100% / 6 - 2px) calc(100% / 6 - 1px),#11091e calc(100% / 6 - 1px) calc(100% / 6)),
+ radial-gradient(ellipse at 44% 0%,#9e72993d,transparent 48%)
+}
+#game .reel{
+ border:0;border-right:1px solid #9f7ba358;border-radius:0;box-shadow:none;
+ background:linear-gradient(#1b1227de,#160c21 72%,#1d0f27)
+}
+#game .reel:last-child{border-right:0}
+#game .reel::after{box-shadow:inset 0 1px #77558286,inset 0 4px 6px #0c0710ac}
+#game .cell{border-color:#69517239}
+#game .cell img,#game .cell picture{width:98%;height:99%;padding:0;justify-self:center}
+#game .cell.wild img,#game .cell.scatter img{padding:1px 1px max(6px,9%)}
+.dock-glass{
+ position:absolute;inset:var(--dock-inset) var(--dock-side);z-index:2;
+ border-radius:16px;pointer-events:none;
+ background:linear-gradient(131deg,transparent 14%,#f3d9ff0a 14.2%,#c5a8fc04 27%,transparent 27.1% 72%,#cc92f806 72.2%,transparent 80%);
+ box-shadow:inset 0 1px #e5c9f44f,inset 0 5px 8px #06030c68,inset 0 -5px 8px #05020b80
+}
+#game .stage #chaos,#game .stage>.side,#game[data-tier] .stage>.side{
+ position:absolute;top:-34px;z-index:7;min-height:0;margin:0;padding:3px 4px
+}
+#game .stage #chaos{left:0;max-width:37%;width:auto}
+#game .stage>.side,#game[data-tier] .stage>.side{right:0;width:119px}
+#game #mode{bottom:5px;left:8px;max-width:28%}
+#game[data-tier] #mode{left:auto;right:8px;bottom:37px}
+#game .stage .side>#feature,#game .stage #chaos{border-width:1px;border-color:#b58bbc;box-shadow:0 2px 7px #10051b}
+#game #round-actions{
+ position:absolute;inset:3px auto auto 14px;z-index:8;max-width:27%;
+ justify-content:flex-start;margin:0;background:none;pointer-events:none
+}
+#game #round-actions button{pointer-events:auto}
+#game #round-actions:not(:has(button:not([hidden]))):not(:has(#jurisdiction-readout:not(:empty))){display:none!important}
+#game #status{display:block;height:12px;min-height:12px;line-height:12px;margin:0 auto;align-self:center}
+#game .console,#game[data-tier] .console{
+ width:100%;min-height:80px;position:relative;isolation:isolate;
+ grid-template-areas:"features balance win amount audio play spin";gap:clamp(4px,.8vw,13px);
+ padding:2px clamp(8px,1.35vw,21px);border-radius:21px;
+ border-color:#a98fb5;background:linear-gradient(#68516f,#2f233c 15%,#181124 71%,#41304b 93%,#26192b);
+ box-shadow:0 4px 10px #090310,inset 0 2px #c4a3ce55
+}
+#game .console::before{content:"";position:absolute;inset:0;border:15px solid transparent;border-image:url(assets/dockmaster/deck.webp) 110 repeat;border-radius:inherit;pointer-events:none;z-index:-1;opacity:.78}
+#game .console>.readout,#game .console>.stake{
+ min-height:50px;border:1px solid #b789c3;border-top-color:#e4badf;border-radius:12px;
+ background:linear-gradient(#170d24,#25142e 78%,#351941);box-shadow:inset 0 2px 4px #0c0516
+}
+#game .console>.readout{padding:2px 5px;min-width:0}
+#game .console>.readout strong{max-width:100%;text-overflow:ellipsis;overflow:hidden}
+#game .console>.stake{padding:2px}
+#game .console #amount-open{padding:2px 7px}
+#game .console button:not(#spin){border-color:#bea0c5;background:linear-gradient(#5a4664,#31243d 27%,#221730 72%,#423050);box-shadow:inset 0 1px #dfc7e66e,0 1px 2px #100716}
+#game .console .small{width:42px;height:43px;padding:8px}
+#game .console button[aria-pressed="true"]{color:#e6ffac;border-color:#ceee8b;background:#354320;box-shadow:inset 0 -3px #8aab51}
+#game .console #spin,#game[data-tier] .console #spin{
+ width:76px;height:auto;display:grid;place-content:center;justify-items:center;justify-self:center;gap:2px;
+ border:4px solid #b18eaa;box-shadow:inset 0 0 0 2px #fff0a0,inset 0 -6px 7px #8b3709,0 0 0 2px #432e4d,0 0 13px #f794466e;
+ background:radial-gradient(circle at 43% 29%,#fff4b3,#ffc65e 25%,#ef8d1f 64%,#a44413 82%);color:#3b1b0e
+}
+#game .console #spin svg{width:21px;height:21px;stroke:currentColor;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+#game .console #spin span{font-size:14px;text-transform:uppercase}
+#game .orb-tug{top:4%;animation-duration:14s;opacity:.87}
+#game .beacon{animation-duration:14s}
+@media(max-width:760px) and (orientation:portrait){
+ #game,#game[data-tier]{--fixed-slot:clamp(35px,calc((100dvh - 333px)/6),85px);--dock-inset:11px;--dock-side:10px;padding:2px 3px}
+ #game>header,#game[data-tier]>header{height:108px;min-height:108px}
+ #game>header h1,#game[data-tier]>header h1{width:95%;height:75%;inset:auto auto -9px 50%;overflow:visible}
+ #game>header h1 img{width:76%;max-height:60px}
+ .dock-crew{display:flex;width:100%;height:98%;gap:0;justify-content:center;align-items:flex-start}
+ .dock-crew img{width:25%;height:87px}.dock-crew .dock-commander{height:98px}
+ .dock-rim{border-width:15px}
+ #game .stage .machine,#game[data-tier] .stage .machine{border-radius:16px}
+ #game .reels,#game .dock-glass{border-radius:10px}
+ #game .reels::before{background-color:#241630;background-image:repeating-linear-gradient(90deg,transparent 0 calc(100% / 6 - 1px),#9d77ae56 calc(100% / 6 - 1px) calc(100% / 6)),radial-gradient(ellipse at 48% 0%,#bd8dd54f,transparent 58%),linear-gradient(#251735,#140d22 58%);opacity:.75}
+ #game .stage #chaos{top:-17px;left:0;font-size:8px;max-width:68%;gap:4px;z-index:8;padding:1px 3px}
+ #game .stage>.side,#game[data-tier] .stage>.side{top:-17px;width:93px;padding:0 2px;z-index:8}
+ #game #meter{gap:2px}
+ #game .stage #meter .level,#game .stage #points{font-size:8px;line-height:1.1}
+ #game #mode,#game[data-tier] #mode{top:1px;left:2px;right:auto;bottom:auto}
+ #game #status{font-size:9px}
+ #game .console,#game[data-tier] .console{
+  grid-template-areas:"balance balance win win" "amount spin spin features" "audio audio play play";
+  grid-template-columns:minmax(0,1fr) 44px 44px minmax(0,1fr);grid-template-rows:auto auto auto;
+  border-radius:17px;gap:5px 4px;padding:7px;min-height:172px
+ }
+ #game .console::before{border-width:13px}
+ #game .console>.readout{min-height:34px;padding:2px 4px}
+ #game .console .bridge-actions{display:grid;grid-auto-flow:row;gap:3px}
+ #game .console #spin,#game[data-tier] .console #spin{width:86px}
+ #game .console button:not(#spin){min-height:44px}
+ #game .console .small{width:44px;height:44px}
+ #game .console>.tools:not(.play-tools){justify-content:space-evenly}
+ #game .console>.play-tools{justify-content:space-evenly;flex-wrap:nowrap}
+ #game .console .stake{border:0;background:none;box-shadow:none}
+ #game .console #amount-open{width:100%;min-width:0}
+ #game .console button{font-size:10px}
+ #game #round-actions{left:3px;top:2px;max-width:35%}
+}
+@media(max-width:360px) and (orientation:portrait){
+ #game,#game[data-tier]{--fixed-slot:clamp(33px,calc((100dvh - 304px)/6),74px)}
+ #game>header,#game[data-tier]>header{height:79px;min-height:79px}
+ .dock-crew img{height:68px}.dock-crew .dock-commander{height:76px}
+ #game>header h1,#game[data-tier]>header h1{height:66px}
+ #game .console,#game[data-tier] .console{padding:5px;gap:4px 3px}
+ #game .console .readout strong{font-size:11px}
+}
+@media(max-height:400px) and (orientation:landscape){
+ #game,#game[data-tier]{--fixed-slot:clamp(9px,calc((100dvh - 104px)/6),51px);--dock-inset:4px;--dock-side:7px;padding:0 3px;gap:1px}
+ #game>header,#game[data-tier]>header{height:27px;min-height:27px}
+ .dock-crew{display:none}
+ #game>header h1,#game[data-tier]>header h1{height:32px;bottom:-5px;width:155px}
+ #game>header h1 img{max-height:27px;width:77%}
+ .dock-rim{border-width:8px}
+ #game .stage .machine,#game[data-tier] .stage .machine{border-radius:10px}
+ #game .reels,#game .dock-glass{border-radius:6px}
+ #game .stage #chaos{top:-10px;padding:1px 2px;max-width:34%;align-items:center}
+ #game .stage>.side,#game[data-tier] .stage>.side{top:-9px!important;width:83px;padding:0 2px}
+ #game .stage #chaos #points{display:none}
+ #game .stage .side>#feature{padding:0 1px}
+ #game #status{height:10px;min-height:10px;line-height:10px;font-size:8px}
+ #game .console,#game[data-tier] .console{grid-template-areas:"features balance win amount spin" "audio audio play play spin";grid-template-columns:auto minmax(0,1fr) minmax(0,.85fr) auto auto;min-height:48px;gap:1px 3px;padding:2px 4px;border-radius:12px}
+ #game .console::before{border-width:8px}
+ #game .console>.readout,#game .console>.stake{min-height:20px;padding:0 2px}
+ #game .console .small{width:28px;height:21px;padding:2px}
+ #game .console .small svg{max-width:14px;max-height:14px}
+ #game .console button:not(#spin){min-height:19px}
+ #game .console #spin,#game[data-tier] .console #spin{width:44px;border-width:2px;gap:1px}
+ #game .console #spin svg{width:13px;height:13px}
+ #game .console #spin span{font-size:9px}
+ #game .console #amount-open{min-width:67px;padding:1px 3px}
+ #game .console .stake small{font-size:6px}
+ #game #round-actions{left:3px;top:0}
+}
+@media(prefers-reduced-motion:reduce){.dock-crew img{animation:none!important}}
+
+#game .console #spin,#game[data-tier] .console #spin{animation:none}
+@media(max-width:760px) and (orientation:portrait){
+ #game,#game[data-tier]{--fixed-slot:clamp(34px,calc((100dvh - 351px)/6),82px)}
+ #game .reels::before{background-image:repeating-linear-gradient(90deg,transparent 0 calc(100% / 6 - 1px),#9d77ae54 calc(100% / 6 - 1px) calc(100% / 6)),linear-gradient(#241831c7,#160d25e8 53%),url(assets/visual/environment/bay.webp);background-position:center;background-size:auto,auto,cover;opacity:.85}
+}
+@media(max-width:360px) and (orientation:portrait){
+ #game,#game[data-tier]{--fixed-slot:clamp(32px,calc((100dvh - 320px)/6),73px)}
+}
+@media(max-height:400px) and (orientation:landscape){
+ #game,#game[data-tier]{--fixed-slot:clamp(9px,calc((100dvh - 106px)/6),51px)}
+}
+@media(max-width:760px) and (orientation:portrait){
+ #game .console #spin,#game[data-tier] .console #spin{width:86px;min-width:86px;max-width:86px;height:86px;transform:none}
+ #game .console #spin:active{filter:brightness(1.09)}
+}
+#game .cell img,#game .cell picture{position:static;inset:auto;align-self:center}
+#game .reel{align-self:end}
+@media(max-width:760px) and (orientation:portrait){
+ #game[data-tier] #mode{max-width:48%;font-size:8px;letter-spacing:.05em;line-height:10px}
+}
+@media(max-height:400px) and (orientation:landscape){
+ #game[data-tier] #mode{inset:0 auto auto 3px;max-width:32%;font-size:7px;letter-spacing:.045em;line-height:8px}
+}
+/* Recessed steel backplates sit behind the authoritative symbol strips. */
+#game .reels::before{
+ background-color:#130f20;
+ background-image:
+  linear-gradient(180deg,#090611cc 0%,transparent 19%,#110b1bc4 73%),
+  radial-gradient(ellipse at 50% 12%,#8e68964a 0%,transparent 58%),
+  linear-gradient(90deg,#0b0815 0 2%,#77637b58 2.5% 3.5%,#20182d 4% 8%,transparent 9% 90%,#20182d 91% 95%,#6149694f 96% 97%,#0c0915 98%),
+  linear-gradient(90deg,transparent 9%,#70586b36 10% 11%,#100e1c 12% 16%,#6d536745 17% 18%,transparent 19% 80%,#61476545 81% 82%,#100e1c 83% 87%,#76526945 88% 89%,transparent 90%),
+  repeating-linear-gradient(180deg,#38283b 0 1px,#21182e 2px 6px,#160f23 8px 14px),
+  linear-gradient(90deg,#211829,#292036 48%,#171122);
+ background-size:100% 100%,100% 100%,calc(100% / 6) 100%,calc(100% / 6) 100%,calc(100% / 6) 100%,calc(100% / 6) 100%;
+ background-position:0 0;opacity:.88;
+}
+#game .reel{background:linear-gradient(#1b1227,#160c21 72%,#1d0f27)}
+@media(max-height:300px) and (orientation:landscape){
+ #game .reels::before{opacity:.65}
+}
+/* Each authoritative reel divides the stationary cabinet aperture by its row count. */
+#game .reels{--aperture-height:calc(var(--fixed-slot) * 6 + 2px);height:var(--aperture-height)}
+#game .reel{
+ --reel-pitch:calc(var(--aperture-height) / var(--rows));
+ height:100%;align-self:stretch;grid-template-rows:repeat(var(--rows),minmax(0,1fr))
+}
+#game .reel-strip .cell{height:var(--reel-pitch)}
+#game .reel-strip .cell.outgoing{height:var(--outgoing-pitch)}
+#game .reel-strip{padding:0;border:0}
+#game .cell img,#game .cell picture{min-width:0;max-width:100%;object-fit:contain;object-position:center}
+.active-ways{
+ position:absolute;z-index:4;top:6px;right:1px;display:grid;justify-items:center;gap:2px;
+ min-width:115px;padding:6px 11px 5px;line-height:1;
+ border:1px solid #a887b7;border-top-color:#e1bbe4;border-bottom-color:#e9ad5d;border-radius:9px;
+ background:linear-gradient(#624c71 0%,#30203f 16%,#180e27 78%,#3d274d);
+ box-shadow:inset 0 1px #c39bc968,inset 0 -2px #ca88446a,0 3px 7px #0f0715bb;
+}
+.active-ways span{color:#f0d7f2;text-transform:uppercase;font-size:9px;font-weight:760;letter-spacing:.12em}
+.active-ways strong{color:#fff3de;font-variant-numeric:tabular-nums;font-size:19px;letter-spacing:.025em}
+@media(max-width:760px) and (orientation:portrait){
+ .dock-crew{width:78%;margin-left:0}
+ .active-ways{top:3px;right:1px;min-width:71px;padding:4px 4px 3px}
+ .active-ways span{font-size:7px;letter-spacing:.06em}.active-ways strong{font-size:13px}
+}
+@media(max-height:400px) and (orientation:landscape){
+ .active-ways{top:0;right:1px;min-width:73px;padding:2px 5px;gap:1px;border-radius:5px}
+ .active-ways span{font-size:6px;letter-spacing:.06em}.active-ways strong{font-size:10px}
+}
+@media(min-width:761px) and (min-height:401px){
+ .active-ways{right:clamp(27px,2.6vw,40px)}
+}

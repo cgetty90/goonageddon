@@ -1,0 +1,99 @@
+/* Command Bridge mounts on the existing Dockmaster control footprint. */
+#game .console,#game[data-tier] .console{
+ border:1px solid #796385;border-top-color:#c0a0c2;border-bottom:3px solid #302039;
+ background:linear-gradient(180deg,#7f6888 0,#4a3858 6%,#322641 10%,#1d1629 36%,#16101e 80%,#3c2945 92%,#5e4462 96%,#23192f);
+ box-shadow:inset 0 2px #d9a8c747,0 4px 9px #090510;
+ isolation:isolate;
+}
+#game .console::before{
+ inset:4px 8px;border:0;border-radius:inherit;opacity:1;
+ clip-path:polygon(2% 0,98% 0,100% 27%,100% 73%,98% 100%,2% 100%,0 73%,0 27%);
+ background:repeating-linear-gradient(0deg,#ffffff06 0 1px,transparent 1px 3px),linear-gradient(#82668a,#50405e 6%,#2c233b 29%,#22192d 72%,#362941 92%,#88627e);
+}
+#game .console::after{
+ content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border-radius:inherit;
+ background:
+  linear-gradient(116deg,#302139 10%,#ae879c 18%,#57415e 25%,#20162b 69%,#674b67 95%) 6% 0/38px 8px no-repeat,
+  linear-gradient(64deg,#674b67 5%,#20162b 30%,#57415e 75%,#ae879c 83%,#302139 90%) 94% 0/38px 8px no-repeat,
+  linear-gradient(90deg,#9c4320,#ffce7c 30%,#fd9e4a 77%,#9c4320) 6% calc(100% - 2px)/9% 3px no-repeat,
+  linear-gradient(90deg,#9c4320,#ffce7c 30%,#fd9e4a 77%,#9c4320) 94% calc(100% - 2px)/9% 3px no-repeat;
+}
+#game .console>.readout,#game .console>.stake{
+ border-color:#765c84;border-top-color:#302039;border-bottom-color:#aa86a6;
+ background:linear-gradient(#100b17,#1b1025 78%,#2e1d39);box-shadow:inset 0 1px 6px #0a060f;
+}
+#game .console>.readout span,#game .console #bet-caption{color:#e5c9e9;letter-spacing:.09em;font-weight:800}
+#game .console strong{font-variant-numeric:tabular-nums;color:#fff5e6}
+#game .console #win{color:#ffdb9a}
+#game .console>.tools{background:transparent;border:0;box-shadow:none}
+#game .console button:not(#spin){
+ border-color:#8d7098;border-top-color:#baa0c0;border-bottom-color:#503754;
+ background:linear-gradient(#604869,#44334f 44%,#261c35 49%,#352441);
+ box-shadow:inset 0 1px #e1c4ed34,0 3px 3px #130b1b;
+}
+#game .console #buy-open{color:#ffe2a7;border-top-color:#d4a57f;border-left:3px solid #f9b460;background:linear-gradient(#684946,#492e38 52%,#2d1c2b)}
+#game .console #ante-open{color:#eee1f5}
+#game .console #ante-open b{color:#ffcd91}
+#game .console #ante-open[aria-pressed="true"],#game .console #turbo[aria-pressed="true"]{background:linear-gradient(#6b422a,#4a2930 54%,#312026);border-color:#ffbe71;color:#ffdf9b;box-shadow:inset 0 -2px #c97837}
+#game .console button:not(#spin):enabled:hover{filter:brightness(1.17)}
+#game .console button:not(#spin):enabled:active{transform:translateY(1px);box-shadow:inset 0 2px 4px #130b1b}
+#game .console button:focus-visible{outline:2px solid #ffe4a1;outline-offset:2px}
+#game .console button:disabled{opacity:.48;cursor:default}
+#game .console #spin,#game[data-tier] .console #spin{
+ border:3px solid #bb8ca7;color:#351514;
+ background:radial-gradient(ellipse at 44% 18%,#fff9d8 0%,#ffda7c 21%,#ffad39 49%,#ce611c 78%,#ffbc57 96%);
+ box-shadow:inset 0 0 0 2px #61394f,inset 0 0 0 5px #ffd89a,inset 0 -9px 11px #a043286f,0 0 0 3px #2e2037,0 0 0 4px #a07192,0 4px 9px #0e0916;
+ text-shadow:0 1px #ffdf9b;
+}
+#game .console #spin:enabled:hover{filter:brightness(1.12)}
+#game .console #spin:enabled:active{filter:brightness(1.2) saturate(1.1)}
+#game[data-state="submitting"] .console #spin,#game[data-state="spin"] .console #spin{opacity:1;filter:saturate(1.2);box-shadow:inset 0 0 0 3px #754253,inset 0 0 0 5px #ffe0a2,0 0 10px #ffab527d}
+#game #auto-stop,#game #cinema-stop{color:#ffe5bd;border-color:#d88c5a;background:linear-gradient(#773a36,#3c202d)}
+@media(min-width:1000px) and (min-height:481px){
+ #game .console,#game[data-tier] .console{grid-template-areas:"features balance win amount play audio spin";grid-template-columns:auto minmax(105px,1.2fr) minmax(86px,.85fr) minmax(160px,1fr) auto auto 84px;gap:clamp(4px,.7vw,11px)}
+ #game .console #spin,#game[data-tier] .console #spin{width:76px;height:76px}
+ #game .console .bridge-actions{gap:6px}
+ #game .console #buy-open{order:-1}
+ #game .console #auto-open,#game .console #turbo,#game .console #settings{width:auto;padding-inline:8px}
+ #game .console #auto-open::after{content:"Autoplay"}
+ #game .console #turbo::after{content:"Turbo"}
+ #game .console #settings::after{content:"Settings"}
+ #game .console .play-tools button{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:800;text-transform:uppercase}
+ #game .console .play-tools svg{width:14px}
+}
+@media(max-width:760px) and (orientation:portrait){
+ #game .console,#game[data-tier] .console{grid-template-areas:"balance balance win win" "amount spin spin features" "play play audio audio"}
+ #game .console #buy-open{order:-1}
+ #game .console .stake{border-color:#765c84}
+ #game .console .small{padding:6px;width:44px}
+ #game .console #win,#game .console #balance{font-size:clamp(12px,3.3vw,15px)}
+}
+@media(max-height:400px) and (orientation:landscape){
+ #game .console::after{display:none}
+ #game .console #spin,#game[data-tier] .console #spin{width:44px;height:44px;box-shadow:inset 0 0 0 2px #743a53,0 0 0 1px #a67597}
+}
+@media(prefers-reduced-motion:no-preference){#game .console button{transition:filter .12s,box-shadow .14s,transform .1s}}
+@media(max-width:760px) and (orientation:portrait){
+ #game .console,#game[data-tier] .console{row-gap:3px;border-bottom-width:1px}
+}
+@media(max-height:400px) and (orientation:landscape){
+ #game .console,#game[data-tier] .console{border-bottom-width:1px}
+}
+@media(max-height:400px) and (orientation:landscape){
+ #game .console,#game[data-tier] .console{padding-block:1px}
+}
+/* Depth within the existing housing and console footprint. */
+#game .console::before{box-shadow:inset 0 1px #ddb9c76b,inset 0 -2px #100a16}
+#game .console #spin,#game[data-tier] .console #spin{
+ background:radial-gradient(ellipse at 44% 16%,#fff8d2 0%,#ffd376 24%,#fda238 48%,#c95b1e 78%,#ffb851 96%);
+ box-shadow:inset 0 0 0 2px #5d3549,inset 0 0 0 5px #ffd698,inset 0 -8px 12px #7a271c75,0 0 0 3px #2c1e37,0 0 0 4px #a07798,0 4px 5px #0c0715;
+}
+#game .console button:not(#spin):enabled:hover{filter:brightness(1.13)}
+#game .console button:not(#spin):enabled:active{filter:brightness(.96)}
+#game .console button:disabled{opacity:.58}
+#game .console #spin:enabled:active{box-shadow:inset 0 0 0 2px #5d3549,inset 0 1px 9px #912d24a0,0 0 0 3px #2c1e37,0 0 0 4px #a07798}
+#game .console #mute[aria-pressed="true"]{background:linear-gradient(#52354d,#2a1a35);border-color:#ba94ac;color:#ffdeaa}
+@media(max-height:400px) and (orientation:landscape){
+ #game .console #spin,#game[data-tier] .console #spin{box-shadow:inset 0 0 0 2px #743a53,0 0 0 1px #a67597}
+}
+
